@@ -53,21 +53,21 @@
         </div>
         <el-table ref="multipleTable" tooltip-effect="dark" style="width: 100%">
           <el-table-column type="selection" width="55"> </el-table-column>
-          <el-table-column label="机房ID" width="120"> </el-table-column>
-          <el-table-column label="机房名称" width="120"> </el-table-column>
-          <el-table-column label="机房类型" show-overflow-tooltip>
+          <el-table-column label="机房ID" width="120" prop="id"> </el-table-column>
+          <el-table-column label="机房名称" width="120" prop="name"> </el-table-column>
+          <el-table-column label="机房类型" show-overflow-tooltip prop="type">
           </el-table-column>
-          <el-table-column label="联系人姓名" show-overflow-tooltip>
+          <el-table-column label="联系人姓名" show-overflow-tooltip prop="person_name">
           </el-table-column>
-          <el-table-column label="联系人电话" show-overflow-tooltip>
+          <el-table-column label="联系人邮箱" show-overflow-tooltip prop="email">
           </el-table-column>
-          <el-table-column label="机房运营商" show-overflow-tooltip>
+          <el-table-column label="机房地址" show-overflow-tooltip prop="address">
           </el-table-column>
-          <el-table-column label="最近更新时间" show-overflow-tooltip>
+          <el-table-column label="最近更新时间" show-overflow-tooltip prop="time">
           </el-table-column>
-          <el-table-column label="上报状态" show-overflow-tooltip>
-          </el-table-column>
-          <el-table-column label="操作" show-overflow-tooltip>
+          <!-- <el-table-column label="上报状态" show-overflow-tooltip prop="workingname">
+          </el-table-column> -->
+          <el-table-column label="操作" show-overflow-tooltip >
             <template>
               <el-button size="mini">上报</el-button>
               <!-- <el-button size="mini" type="danger">删除</el-button>
@@ -131,7 +131,13 @@ export default {
   data() {
     return {
       addMRInfoDialogVisible: false,
+
     };
+  },
+  mounted(){
+    // http://yapi.smart-xwork.cn/mock/81866/important/exMachineRooms
+    // 新增表单接口
+    // http://yapi.smart-xwork.cn/mock/81866/important/addexMachineRooms
   },
   methods: {
     submitMRInfoForm() {

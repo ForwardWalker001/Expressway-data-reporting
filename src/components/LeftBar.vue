@@ -77,7 +77,7 @@
 }
 .leftBar {
   /* width:130px;  */
-  height:calc(100vh - 50px);
+  height:calc(100vh - 30px);
   min-width: 130px;
   padding-top: 30px;
   background-color:#545c64;

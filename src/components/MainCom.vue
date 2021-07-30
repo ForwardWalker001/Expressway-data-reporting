@@ -2,6 +2,7 @@
     <div class="content">
         <echarts-line></echarts-line>
         <echarts-pip></echarts-pip>
+        <!-- 首页信息 -->
     </div>
 </template>
 

@@ -24,17 +24,40 @@
           <el-input disabled></el-input>
         </el-form-item> -->
         <el-form-item size="large">
-          <el-button type="primary">保存</el-button>
-          <el-button>连通性测试</el-button>
-          <el-button>注册</el-button>
+          <el-button type="primary" @click="preservat">保存</el-button>
+          <el-button @click="closeCard(true)">连通性测试</el-button>
+          <el-button @click="closeCard(true)">注册</el-button>
         </el-form-item>
       </el-form>
+    </el-card>
+    <!-- <div class="cardCla">{{text}}</div> -->
+    <el-card class="cardCla" v-if="showCard">
+      <el-button type="text" icon="el-icon-close" class="closeIcon" @click="closeCard(false)"></el-button>
+      <span>{{text}}</span>
+      <div>
+        
+      </div>
     </el-card>
   </div>
 </template>
 
 <script>
-export default {};
+export default {
+  data(){
+    return {
+      showCard: false,
+      text : 123,
+    }
+  },
+  methods:{
+    preservat(){
+      // this.text = "+++++++"
+    },
+    closeCard(booolen){
+      this.showCard = booolen
+    }
+  },
+};
 </script>
 
 <style lang="less" scoped>
@@ -49,7 +72,19 @@ export default {};
   justify-content: space-between;
   .el-form-item {
       width: 40%;
-      margin-right: 20px;
+      margin-right: 20px; 
   }
+}
+.cardCla{
+  padding: 10px;
+  margin: 50px auto;
+  height: 250px;
+  border-radius: 10px;
+}
+.closeIcon{
+  position: relative;
+  top:-30px;
+  right: -10px;
+  float: right;
 }
 </style>

@@ -1,6 +1,7 @@
 <template>
     <div >
-        <img id="img" src="../assets/Ahlogo.png" alt="加载中">
+        <!-- <img id="img" src="../assets/Ahlogo.png" alt="加载中"> -->
+        <span class="span" id="img">数据上报系统</span>
         <router-link to="/index"></router-link>
         <router-link to="/infoSys"></router-link>
         <router-link to="/unitSys"></router-link>
@@ -9,7 +10,7 @@
         <router-link to="/threaten"></router-link>
         <router-link to="/connectTest"></router-link>
         <el-container>
-            <el-header style="height:50px; padding:0">
+            <el-header style="height:30px; padding:0">
                 <head-bar></head-bar>
             </el-header>
             <el-container>
@@ -40,11 +41,6 @@ export default {
         }
     },
     mounted(){
-        // this.$axios.get('http://10.11.44.74:8080/test/threatintelligence/selectAllInformation')
-        // .then((res) => {
-        //     console.log(res)
-        // })
-        // console.log(this.$axios)
     },
     methods:{
         
@@ -53,21 +49,20 @@ export default {
 </script>
 
 <style scoped>
-#content {
-    /* width: 400px; */
-    /* float: left; */
-    /* margin-top: 40px; */
-    /* margin: 40px  0px ; */
-    /* display: flex; */
-    /* justify-content: center; */
-}
+
 #img {
     width: 150px;
     height: 46px;
     position: absolute;
     top:5px;
-    left: 5px;
+    left: 0px;
     z-index:100;
 }
-
+ .span{
+   line-height: 50px;
+   color: #03a9f4;
+   font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+   font-size: 16px;
+   text-align: center;
+ }
 </style>

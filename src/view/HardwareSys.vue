@@ -49,21 +49,21 @@
         </div>
         <el-table ref="multipleTable" tooltip-effect="dark" style="width: 100%">
           <el-table-column type="selection" width="55"> </el-table-column>
-          <el-table-column label="硬件标识" width="120"> </el-table-column>
-          <el-table-column label="硬件名称" width="120"> </el-table-column>
-          <el-table-column label="硬件IP" show-overflow-tooltip>
+          <el-table-column label="硬件id" width="120" prop="id"> </el-table-column>
+          <el-table-column label="硬件名称" width="120" prop="name"> </el-table-column>
+          <el-table-column label="硬件类型" show-overflow-tooltip prop="type">
           </el-table-column>
-          <el-table-column label="硬件分类" show-overflow-tooltip>
+          <!-- <el-table-column label="硬件分类" show-overflow-tooltip prop="id">
+          </el-table-column> -->
+          <el-table-column label="联系人" show-overflow-tooltip prop="person_name">
           </el-table-column>
-          <el-table-column label="所属系统" show-overflow-tooltip>
+          <el-table-column label="地址" show-overflow-tooltip prop="address">
           </el-table-column>
-          <el-table-column label="硬件序列号" show-overflow-tooltip>
+          <el-table-column label="联系人电话" show-overflow-tooltip prop="person_phone">
           </el-table-column>
-          <el-table-column label="硬件状态" show-overflow-tooltip>
+          <el-table-column label="最近更新时间" show-overflow-tooltip prop="time">
           </el-table-column>
-          <el-table-column label="最近更新时间" show-overflow-tooltip>
-          </el-table-column>
-          <el-table-column label="上报状态" show-overflow-tooltip>
+          <el-table-column label="上报状态" show-overflow-tooltip prop="id">
           </el-table-column>
           <el-table-column label="操作" show-overflow-tooltip>
             <template>
@@ -135,6 +135,12 @@ export default {
     return {
       addUnitInfoDialogVisible: false,
     }
+  },
+  mounted(){
+    //获取信息接口
+    // http://yapi.smart-xwork.cn/mock/81866/important/exhardwares
+    // 增加数据接口
+    // http://yapi.smart-xwork.cn/mock/81866/important/addexhardwares
   },
   methods: {
     submitUnitInfoForm() {

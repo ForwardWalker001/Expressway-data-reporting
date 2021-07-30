@@ -10,8 +10,28 @@ export default {
   name: 'App',
   components: {
     IndexCom
+  },
+  data(){
+    return {
+      // isRouterAlive:true
+    }
+  },
+  // provide(){
+  //   return{
+  //     reload:this.reload,
+  //   }
+  // },
+  methods:{
+    // reload(){
+    //   this.isRouterAlive = false
+    //   this.$nextTick(function(){
+    //     this.isRouterAlive = true
+    //     console.log(12+"=======")
+    //   })
+    // }
   }
 }
+
 </script>
 
 <style>

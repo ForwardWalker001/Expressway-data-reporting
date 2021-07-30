@@ -17,116 +17,130 @@
     <el-table-column align='center'
       fixed
       prop="probeId"
-      label="probeId"
+      label="ip 所属机构"
       width="120">
     </el-table-column>
     <el-table-column align='center'
       prop="ipDstPort"
-      label="ipDstPort"
+      label="目的ip 端口"
       width="120">
     </el-table-column>
     <el-table-column align='center'
       prop="threatNum"
-      label="threatNum"
+      label="具体威胁的次数"
       width="120">
     </el-table-column>
     <el-table-column align='center'
       prop="enrichmentsIpSrcAddrAssetName"
-      label="enrichmentsIpSrcAddrAssetName"
+      label="目的ip 的资产名称"
+      width="120">
+      </el-table-column><el-table-column align='center'
+      prop="enrichmentsIpSrcAddrSsetType"
+      label="源ip 的资产类型"
       width="120">
     </el-table-column>
     <el-table-column align='center'
       prop="enrichmentsThreatNameLevel"
-      label="enrichmentsThreatNameLevel"
+      label="威胁名称所属的威胁等级"
       width="120">
     </el-table-column>
-    <el-table-column align='center'
+    <!-- <el-table-column align='center'
       prop="enrichmensIpDstAddrAssetName"
       label="enrichmensIpDstAddrAssetName"
-      width="120">
-    </el-table-column>
+      width="120"> -->
+    <!-- </el-table-column> -->
     <el-table-column align='center'
       prop="enrichmentsThreatTypeLevel"
-      label="enrichmentsThreatTypeLevel"
+      label="所属威胁等级"
       width="120">
     </el-table-column>
     <el-table-column align='center'
       prop="classification"
-      label="classification"
+      label="攻击名称id"
       width="120">
     </el-table-column>
     <el-table-column
       prop="sid" align='center'
-      label="sid"
+      label="所属特征id "
       width="120">
     </el-table-column>
     <el-table-column align='center'
       prop="sourceType"
-      label="sourceType"
+      label="标记日志类型"
       width="120">
     </el-table-column>
     <el-table-column align='center'
       prop="enrichmentsThreatStatus"
-      label="enrichmentsThreatStatus"
+      label="具体威胁状态"
       width="120">
     </el-table-column>
     <el-table-column align='center'
       prop="ipDstAddr"
-      label="ipDstAddr"
+      label="目的ip地址"
       width="120">
     </el-table-column>
     <el-table-column align='center'
       prop="enrichmentsThreatName"
-      label="enrichmentsThreatName"
+      label="具体威胁名称"
       width="120">
     </el-table-column>
     <el-table-column align='center'
       prop="enrichmentsDirection"
-      label="enrichmentsDirection"
+      label="所属威胁方向"
       width="120">
     </el-table-column>
     <el-table-column align='center'
       prop="enrichmentsGeoIpSrcAddrCountryCn"
-      label="enrichmentsGeoIpSrcAddrCountryCn"
+      label="源ip所属国家名称"
       width="120">
     </el-table-column>
     <el-table-column
       prop="subIp" align='center'
-      label="subIp"
+      label="数据上报来源ip"
       width="120">
     </el-table-column>
     <el-table-column align='center'
       prop="enrichmentsIpDstAddrAssetType"
-      label="enrichmentsIpDstAddrAssetType"
+      label="目的 ip的资产类型"
       width="120">
     </el-table-column>
     <el-table-column align='center'
       prop="ipSrcAddr"
-      label="ipSrcAddr"
+      label="威胁源ip"
       width="120">
     </el-table-column>
     <el-table-column align='center'
       prop="enrichmentsGeoIpDstAddrCountryCn"
-      label="enrichmentsGeoIpDstAddrCountryCn"
+      label="目的ip所属国家名称"
       width="120">
     </el-table-column>
     <el-table-column align='center'
       prop="enrichmentsThreatTypeAlias"
-      label="enrichmentsThreatTypeAlias"
+      label="威胁的具体类型"
       width="120">
     </el-table-column>
     <el-table-column align='center'
       prop="timestamp"
-      label="timestamp"
+      label="时间"
       width="120">
     </el-table-column>
     <el-table-column align='center'
       fixed="right"
-      label="操作"
-      width="100">
+      prop="status"
+      label="发布状态"
+      width="120">
       <template slot-scope="scope">
-        <el-button @click="handleClick(scope.row)" type="text" size="small">上传</el-button>
-        <el-button type="text" size="small" @click="remove(scope.row)">删除</el-button>
+        <span v-if="scope.row.staus==1">已发布</span>
+        <span v-else>未发布</span>
+      </template>
+    </el-table-column>
+    <el-table-column align='center'
+      fixed="right"
+      label="操作"
+      width="120">
+      <template slot-scope="scope">
+        <el-button @click="handleClick(scope.row)" type="text" size="medium" v-if="scope.row.staus==0">上传</el-button>
+        <el-button type="text" size="medium" @click="remove(scope.row)">删除</el-button>
       </template>
     </el-table-column>
   </el-table>
@@ -134,11 +148,9 @@
      <div class="paginationContainer">
         <el-pagination
           :current-page="pageInst.currentPage"
-          
           :page-size="pageInst.pageSize"
           layout="total, prev, pager, next, jumper"
           :total="this.AllDatas.length"
-          
           @current-change="handleCurrentChange"
         >
         </el-pagination>
@@ -162,13 +174,14 @@
 
 <script>
   export default {
+    inject: ['reload'],
     data() {
       return {
         addUnitInfoDialogVisible: false,
         pageInst: {
           "currentPage": 1,
           "pageSizes" : [10, 20, 30, 40],
-          "pageSize" : 10
+          "pageSize" : 5
         },
         AllDatas: [],
         tableData: [],
@@ -188,7 +201,16 @@
         //   console.log(this.AllDatas)
         //   this.tableData = this.AllDatas.slice(0,this.pageInst.pageSize)
         // })
-        this.tableData = this.AllDatas.slice(0,this.pageInst.pageSize)
+        this.$axios.get('http://yapi.smart-xwork.cn/mock/81866/test/threatintelligence/selectAllInformation')
+        .then((res)=>{
+          console.log(res)
+          this.AllDatas = res.data.InformationList
+        }).catch((error)=> {
+          console.log(error);
+        }).then(()=>{
+          this.tableData = this.AllDatas.slice(0,this.pageInst.pageSize)
+        })
+        // console.log(this.AllDatas)
     },
     methods: {
       handleClick(row) {
@@ -196,19 +218,43 @@
         // location.reload()
       },
       remove(row){
-        console.log(row);
+        // console.log(row.id);
         this.$confirm('是否删除', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
       }).then(() => {
         //请求内容。。。
-        // ...
-        this.$message({
-          type: 'success',
-          message: '删除成功!',
-          duration: 1500
-        });
+        this.$axios.post("http://yapi.smart-xwork.cn/mock/81866/test/threatintelligence/deleteInfromation",{
+          id: row.id
+        })
+        .then((res)=>{
+          // console.log(res.data.data.res)
+          const status = res.data.data.res
+          console.log(res.data.data.removeid)
+          if(status == 1){
+            this.$message({
+              type: 'success',
+              message: '删除成功!',
+              duration: 1500
+            })
+            this.$router.go(0)
+            // this.reload()
+          }else{
+            this.$message({
+              type: 'error',
+              message: '删除失败!',
+              duration: 1500
+            })
+          }
+        }).catch((error)=>{
+          console.log(error)
+          this.$message({
+              type: 'error',
+              message: '删除失败!'+error,
+              duration: 1500
+            })
+        })
       }).catch(() => {
         this.$message({
           type: 'info',

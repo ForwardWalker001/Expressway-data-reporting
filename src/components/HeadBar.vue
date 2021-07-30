@@ -1,13 +1,13 @@
 <template>
   <el-menu
-    :default-active="active"
     class="el-menu-demo headBar"
     mode="horizontal"
-    @select="handleSelect"
     background-color="#545c64"
     text-color="#fff"
     active-text-color="#ffd04b">
-    <span id="span">数据上报系统</span>
+    <!-- <span id="span">数据上报系统</span> -->
+    <!-- :default-active="active" -->
+    <!-- @select="handleSelect" -->
     <!-- <el-menu-item index="/index" style="margin-right:100px;height: 50px;
     line-height: 50px;">处理中心</el-menu-item>
     <el-menu-item class="userbut" index="/user" style="height: 50px;
@@ -60,7 +60,7 @@ export default {
  <style scoped>
  .headBar {
     width: 100%;
-    height: 50px;
+    height: 30px;
     float: right;
     display: flex;
     justify-content: space-between;
@@ -68,12 +68,12 @@ export default {
  .el-menu.el-menu--horizontal{
      border : 0px;
  }
- #span{
+ /* #span{
    line-height: 50px;
    color: #b59393;
    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
    font-size: 16px;
- }
+ } */
  .userbut {
     font-size: 12px;
     position: absolute;

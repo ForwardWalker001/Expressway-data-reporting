@@ -47,30 +47,34 @@
         <el-table ref="multipleTable" tooltip-effect="dark"  style="width: 100%" :data="tableData"
         @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="55"></el-table-column>
-          <el-table-column label="单位全称" width="120" prop="unitname"> </el-table-column>
-          <el-table-column label="单位地址" width="120" prop="address"> </el-table-column>
-          <el-table-column label="联系人姓名" show-overflow-tooltip prop="ralname">
+          <el-table-column label="单位全称" width="120" prop="workingname"></el-table-column>
+          <el-table-column label="单位地址" width="120" prop="address"></el-table-column>
+          <el-table-column label="联系人姓名" show-overflow-tooltip prop="person_name">
           </el-table-column>
-          <el-table-column label="联系人电话" show-overflow-tooltip prop="num">
+          <el-table-column label="联系人电话" show-overflow-tooltip prop="person_phone">
           </el-table-column>
-          <el-table-column label="更新时间" show-overflow-tooltip prop="data">
+          <el-table-column label="更新时间" show-overflow-tooltip prop="time">
           </el-table-column>
-          <el-table-column label="上报状态" show-overflow-tooltip prop="complete">
+          <el-table-column label="上报状态" show-overflow-tooltip prop="status">
+          </el-table-column>
+          <el-table-column label="下级名称" show-overflow-tooltip prop="subordinateName" v-if="!issubord">
           </el-table-column>
           <el-table-column label="操作" show-overflow-tooltip>
             <template slot-scope="scope">
               <el-button size="mini" @click="submitData(scope.row)">上报</el-button>
             </template>
           </el-table-column>
+          
         </el-table>
       </div>
       <!-- 分页区 -->
       <div class="paginationContainer">
         <el-pagination
-          :current-page="1"
-          :page-size="10"
+          :current-page="pageInst.currentPage"
+          :page-size="pageInst.pageSize"
           layout="total, prev, pager, next, jumper"
-          :total="tableData.length"
+          :total="pageInst.total"
+          @current-change="handleCurrentChange"
         >
         </el-pagination>
       </div>
@@ -111,30 +115,21 @@ export default {
   data() {
     return {
       addUnitInfoDialogVisible: false,
+      issubord: this.$store.state.issubord,
+      pageInst: {
+        "currentPage": 1,
+        "pageSizes" : [10, 20, 30, 40],
+        "pageSize" : 5,
+        "total" : 0
+      },
       serchData : {
         unitname : '',
         ralname:'',
         complete: '',
         data:''
       },
-      tableData: [{
-          id : 1,
-          unitname: '杭州',
-          address: '杭州滨江区',
-          ralname: '123',
-          num: 4567890,
-          data: '2021',
-          complete: '未处理'
-        },
-        {
-          id : 2,
-          unitname: '杭州',
-          address: '杭州滨江区',
-          ralname: '123',
-          num: 4567890,
-          data: '2021',
-          complete: '未处理'
-        }],
+      AllDatas : [],
+      tableData: [],
         newFormdata: {
           unitname: '',
           address: '',
@@ -145,13 +140,31 @@ export default {
     }
   },
   mounted(){
-    this.datas = Object.assign([],this.tableData)
+    // this.AllDatas = Object.assign([],this.tableData)
+    this.$axios.get('http://yapi.smart-xwork.cn/mock/81866/important/exUnits')
+        .then((res)=>{
+          this.AllDatas = res.data.ExUnitList
+        }).catch((error)=> {
+          console.log(error);
+        }).then(()=>{
+          this.pageMethod(this.AllDatas)
+          this.tableData = this.AllDatas.slice(0,this.pageInst.pageSize)
+        })
+      // // 增加数据接口
+      // http://yapi.smart-xwork.cn/mock/81866/important/addexUnits
+
   },
   methods: {
+    handleCurrentChange(page){
+      this.tableData = this.AllDatas.slice(this.pageInst.pageSize*(page-1),this.pageInst.pageSize*page)
+    },
+    pageMethod(datas){
+      this.pageInst.total = datas.length
+      this.tableData = datas.slice(0,this.pageInst.pageSize)
+    },
     // 提交新增表单
     submitUnitInfoForm() {
       console.log("提交单位信息表单")
-
       this.addUnitInfoDialogVisible = !this.addUnitInfoDialogVisible
     },
     // 重置新增表单
@@ -180,21 +193,22 @@ export default {
 
     // 搜索
     serchMethod(){
-      const len = this.datas.length
+      const len = this.AllDatas.length
       const showData = []
       if(this.serchData.unitname==""&&this.serchData.ralname==""&&this.serchData.data==""&&
       this.serchData.complete==""){
         return
       }
       for(let i=0;i<len;i++){
-        if((this.serchData.unitname==""||this.serchData.unitname==this.datas[i].unitname) &&
-            (this.serchData.ralname==""||this.serchData.ralname==this.datas[i].ralname) &&
-            (this.serchData.data==""||this.serchData.data==this.datas[i].data) &&
-            (this.serchData.complete==""||this.serchData.complete==this.datas[i].complete)){
-              showData.push(this.datas[i])
+        if((this.serchData.unitname==""||this.serchData.unitname==this.AllDatas[i].workingname) &&
+            (this.serchData.ralname==""||this.serchData.ralname==this.AllDatas[i].person_name) &&
+            (this.serchData.data==""||this.serchData.data==this.AllDatas[i].time) &&
+            (this.serchData.complete==""||this.serchData.complete==this.AllDatas[i].status)){
+              showData.push(this.AllDatas[i])
             }
         }
       this.tableData = showData
+      this.pageMethod(this.tableData)
     },
     // 搜索重置
     serchReset(){
@@ -204,11 +218,11 @@ export default {
         complete: '',
         data:''
       }
-      // console.log(this.serchData)
+      this.pageMethod(this.AllDatas)
     },
     // 全选框要删除或上报的内容
     handleSelectionChange(val){
-      // console.log(val)
+      console.log(val)
       this.selectData = val
     },
     // 全选框删除
