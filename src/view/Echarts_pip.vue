@@ -20,6 +20,11 @@ export default {
           orient: "vertical",
           left: "left",
         },
+            toolbox: {
+        feature: {
+            saveAsImage: {}
+        }
+    },
         series: [
           {
             type: "pie",

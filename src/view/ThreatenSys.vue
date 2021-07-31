@@ -174,7 +174,6 @@
 
 <script>
   export default {
-    inject: ['reload'],
     data() {
       return {
         addUnitInfoDialogVisible: false,
@@ -239,7 +238,6 @@
               duration: 1500
             })
             this.$router.go(0)
-            // this.reload()
           }else{
             this.$message({
               type: 'error',

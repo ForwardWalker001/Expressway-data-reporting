@@ -294,7 +294,7 @@ export default {
     };
   },
   mounted() {
-    console.log(this.$echarts.graphic.LinearGradient);
+    // console.log(this.$echarts.graphic.LinearGradient);
     this.initEcharts(this.option);
   },
   methods: {

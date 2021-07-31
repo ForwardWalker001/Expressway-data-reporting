@@ -87,19 +87,23 @@
     >
       <el-form status-icon label-width="100px">
         <el-form-item label="单位全称">
-          <el-input autocomplete="off" v-model="newFormdata.unitname"></el-input>
+          <el-input autocomplete="off" v-model="newFormdata.workingname"></el-input>
         </el-form-item>
         <el-form-item label="单位地址">
           <el-input autocomplete="off" v-model="newFormdata.address"></el-input>
         </el-form-item>
         <el-form-item label="联系人姓名">
-          <el-input v-model="newFormdata.ralname"></el-input>
+          <el-input v-model="newFormdata.person_name"></el-input>
         </el-form-item>
          <el-form-item label="联系人电话">
-          <el-input v-model="newFormdata.num"></el-input>
+          <el-input v-model="newFormdata.person_phone"></el-input>
         </el-form-item>
-         <el-form-item label="上报时间">
-          <el-input v-model="newFormdata.data"></el-input>
+         <el-form-item label="上报状态">
+          <!-- <el-input v-model="newFormdata.status"></el-input> -->
+          <el-select v-model="newFormdata.status" placeholder="请选择">
+          <el-option label="已处理" value="已处理"></el-option>
+          <el-option label="未处理" value="未处理"></el-option>
+        </el-select>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="submitUnitInfoForm">提交</el-button>
@@ -130,13 +134,14 @@ export default {
       },
       AllDatas : [],
       tableData: [],
-        newFormdata: {
-          unitname: '',
-          address: '',
-          ralname: '',
-          num: null,
-          data: '',
-        },
+      newFormdata: {
+        workingname: '',
+        address: '',
+        person_name: '',
+        person_phone: null,
+        status: "未处理",
+        // data: '',
+      },
     }
   },
   mounted(){
@@ -165,17 +170,47 @@ export default {
     // 提交新增表单
     submitUnitInfoForm() {
       console.log("提交单位信息表单")
+      // this.$axios.post('http://yapi.smart-xwork.cn/mock/81866/important/addexUnits',{
+      // })
+        this.$axios.post("http://yapi.smart-xwork.cn/mock/81866/important/addexUnits",{
+          ...this.newFormdata
+        })
+        .then((res)=>{
+          const status = res.data.data.res
+          if(status == 1){
+            this.$message({
+              type: 'success',
+              message: '提交成功!',
+              duration: 1500
+            })
+          }else{
+            this.$message({
+              type: 'error',
+              message: '提交失败!',
+              duration: 1500
+            })
+          }
+          this.$router.go(0)
+        }).catch((error)=>{
+          console.log(error)
+          this.$message({
+              type: 'error',
+              message: '提交失败!'+error,
+              duration: 1500
+            })
+        })
       this.addUnitInfoDialogVisible = !this.addUnitInfoDialogVisible
     },
     // 重置新增表单
     resetUnitInfoForm() {
       console.log("重置单位信息表单")
       this.newFormdata = {
-          unitname: '',
-          address: '',
-          ralname: '',
-          num: null,
-          data: '',
+        workingname: '',
+        address: '',
+        person_name: '',
+        person_phone: null,
+        status: "未处理",
+          // data: '',
         }
       // this.addUnitInfoDialogVisible = !this.addUnitInfoDialogVisible
     },
@@ -218,6 +253,7 @@ export default {
         complete: '',
         data:''
       }
+      // this.pageInst.currentPage = 1
       this.pageMethod(this.AllDatas)
     },
     // 全选框要删除或上报的内容

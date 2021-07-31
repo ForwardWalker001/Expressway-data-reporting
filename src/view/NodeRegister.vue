@@ -25,8 +25,8 @@
         </el-form-item> -->
         <el-form-item size="large">
           <el-button type="primary" @click="preservat">保存</el-button>
-          <el-button @click="closeCard(true)">连通性测试</el-button>
-          <el-button @click="closeCard(true)">注册</el-button>
+          <el-button @click="closeCard(true,1)">连通性测试</el-button>
+          <el-button @click="closeCard(true,2)">注册</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -46,15 +46,19 @@ export default {
   data(){
     return {
       showCard: false,
-      text : 123,
+      text : "",
     }
   },
   methods:{
     preservat(){
       // this.text = "+++++++"
     },
-    closeCard(booolen){
+    closeCard(booolen,status){
       this.showCard = booolen
+      if(booolen){
+        if(status==1)this.text = "连通性测试中，请稍后...."
+        else if(status==2)this.text = "注册完成"
+      }
     }
   },
 };
@@ -78,7 +82,7 @@ export default {
 .cardCla{
   padding: 10px;
   margin: 50px auto;
-  height: 250px;
+  height: 200px;
   border-radius: 10px;
 }
 .closeIcon{
