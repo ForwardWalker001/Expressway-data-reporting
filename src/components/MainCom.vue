@@ -1,22 +1,25 @@
 <template>
     <div class="content">
         <echarts-line></echarts-line>
-        <echarts-pip></echarts-pip>
-        <!-- 首页信息 -->
     </div>
 </template>
 
 <script>
-import EchartsLine from '../view/Echarts_line.vue'
-import EchartsPip from '../view/Echarts_pip.vue'
+import EchartsLine from '../view/Big_scren02.vue'
+
 export default {
-    components: { EchartsLine, EchartsPip}
+    components: { 
+    EchartsLine,
+
+     }
 }
 </script>
 <style scoped>
 .content {
+    /* width: 500px;
+    height: 50vh;
     display: flex;
-    justify-content: space-around;
-    margin-top: 50px;
+    justify-content:center; */
+    /* margin-top: 50px; */
 }
 </style>

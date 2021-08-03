@@ -1,5 +1,5 @@
 <template>
-  <div id="line">折线图</div>
+  <div id="line" ref="chart" style="width:65%;height:450px">折线图</div>
 </template>
 
 <script>
@@ -9,16 +9,25 @@ export default {
       initChart: null,
       resChart: null,
       option: {
+        title: {
+          text: "近十天信息上报数量",
+        },
         tooltip: {
           trigger: "axis",
+          axisPointer: {
+            type: "cross",
+            label: {
+              backgroundColor: "#6a7985",
+            },
+          },
         },
         legend: {
-          data: [
-            "机房信息上报",
-            "单位信息上报",
-            "信息系统上报",
-            "硬件资源上报",
-          ],
+          data: ["单位信息", "机房信息", "信息系统信息", "硬件资源信息", "威胁情报"],
+        },
+        toolbox: {
+          feature: {
+            saveAsImage: {},
+          },
         },
         grid: {
           left: "3%",
@@ -26,290 +35,96 @@ export default {
           bottom: "3%",
           containLabel: true,
         },
-        toolbox: {
-          feature: {
-            saveAsImage: {},
-          },
-        },
-        xAxis: {
-          type: "category",
-          boundaryGap: false,
-          data: ["周一", "周二", "周三", "周四", "周五", "周六", "周日"],
-        },
-        yAxis: {
-          type: "value",
-        },
-        series: [
-          {
-            name: "机房信息上报",
-            type: "line",
-            stack: "总量",
-            data: [120, 132, 101, 134, 90, 230, 210],
-          },
-          {
-            name: "单位信息上报",
-            type: "line",
-            stack: "总量",
-            data: [220, 182, 191, 234, 290, 330, 310],
-          },
-          {
-            name: "信息系统上报",
-            type: "line",
-            stack: "总量",
-            data: [150, 232, 201, 154, 190, 330, 410],
-          },
-          {
-            name: "硬件资源上报",
-            type: "line",
-            stack: "总量",
-            data: [320, 332, 301, 334, 390, 330, 320],
-          },
-        ],
-      },
-      /*       option: {
-        backgroundColor: "#080b30",
-        title: {
-          text: "多线图",
-          textStyle: {
-            align: "center",
-            color: "#fff",
-            fontSize: 20,
-          },
-          top: "5%",
-          left: "center",
-        },
-        tooltip: {
-          trigger: "axis",
-          axisPointer: {
-            lineStyle: {
-              color: {
-                type: "linear",
-                x: 0,
-                y: 0,
-                x2: 0,
-                y2: 1,
-                colorStops: [
-                  {
-                    offset: 0,
-                    color: "rgba(0, 255, 233,0)",
-                  },
-                  {
-                    offset: 0.5,
-                    color: "rgba(255, 255, 255,1)",
-                  },
-                  {
-                    offset: 1,
-                    color: "rgba(0, 255, 233,0)",
-                  },
-                ],
-                global: false,
-              },
-            },
-          },
-        },
-        grid: {
-          top: "15%",
-          left: "5%",
-          right: "5%",
-          bottom: "15%",
-          // containLabel: true
-        },
         xAxis: [
           {
             type: "category",
-            axisLine: {
-              show: true,
-            },
-            splitArea: {
-              // show: true,
-              color: "#f00",
-              lineStyle: {
-                color: "#f00",
-              },
-            },
-            axisLabel: {
-              color: "#fff",
-            },
-            splitLine: {
-              show: false,
-            },
             boundaryGap: false,
-            data: ["A", "B", "C", "D", "E", "F"],
+            data: ["一", "二", "三", "四", "五", "六", "七","八","九","十"],
           },
         ],
-
         yAxis: [
           {
             type: "value",
-            min: 0,
-            // max: 140,
-            splitNumber: 4,
-            splitLine: {
-              show: true,
-              lineStyle: {
-                color: "rgba(255,255,255,0.1)",
-              },
-            },
-            axisLine: {
-              show: false,
-            },
-            axisLabel: {
-              show: false,
-              margin: 20,
-              textStyle: {
-                color: "#d1e6eb",
-              },
-            },
-            axisTick: {
-              show: false,
-            },
           },
         ],
         series: [
           {
-            name: "注册总量",
+            name: "单位信息",
             type: "line",
-            smooth: true, //是否平滑
-            showAllSymbol: true,
-            // symbol: 'image://./static/images/guang-circle.png',
-            symbol: "circle",
-            symbolSize: 15,
-            lineStyle: {
-              normal: {
-                color: "#00b3f4",
-                shadowColor: "rgba(0, 0, 0, .3)",
-                shadowBlur: 0,
-                shadowOffsetY: 5,
-                shadowOffsetX: 5,
-              },
+            areaStyle: {},
+            emphasis: {
+              focus: "series",
             },
-            label: {
-              show: true,
-              position: "top",
-              textStyle: {
-                color: "#00b3f4",
-              },
-            },
-            itemStyle: {
-              color: "#00b3f4",
-              borderColor: "#fff",
-              borderWidth: 3,
-              shadowColor: "rgba(0, 0, 0, .3)",
-              shadowBlur: 0,
-              shadowOffsetY: 2,
-              shadowOffsetX: 2,
-            },
-            tooltip: {
-              show: false,
-            },
-            areaStyle: {
-              normal: {
-                color: new this.$echarts.graphic.LinearGradient(
-                  0,
-                  0,
-                  0,
-                  1,
-                  [
-                    {
-                      offset: 0,
-                      color: "rgba(0,179,244,0.3)",
-                    },
-                    {
-                      offset: 1,
-                      color: "rgba(0,179,244,0)",
-                    },
-                  ],
-                  false
-                ),
-                shadowColor: "rgba(0,179,244, 0.9)",
-                shadowBlur: 20,
-              },
-            },
-            data: [502.84, 205.97, 332.79, 281.55, 398.35, 214.02],
+            data: [120, 132, 101, 134, 90, 230, 210,100,300,350],
           },
           {
-            name: "注册总量",
+            name: "机房信息",
             type: "line",
-            smooth: true, //是否平滑
-            showAllSymbol: true,
-            // symbol: 'image://./static/images/guang-circle.png',
-            symbol: "circle",
-            symbolSize: 15,
-            lineStyle: {
-              normal: {
-                color: "#00ca95",
-                shadowColor: "rgba(0, 0, 0, .3)",
-                shadowBlur: 0,
-                shadowOffsetY: 5,
-                shadowOffsetX: 5,
-              },
+            areaStyle: {},
+            emphasis: {
+              focus: "series",
             },
+            data: [220, 182, 191, 234, 290, 330, 310,200,500,450],
+          },
+          {
+            name: "信息系统信息",
+            type: "line",
+            areaStyle: {},
+            emphasis: {
+              focus: "series",
+            },
+            data: [150, 232, 201, 154, 190, 330, 410,650,230,120],
+          },
+          {
+            name: "硬件资源信息",
+            type: "line",
+            areaStyle: {},
+            emphasis: {
+              focus: "series",
+            },
+            data: [320, 332, 301, 334, 390, 330, 320,400,200,120],
+          },
+          {
+            name: "威胁情报",
+            type: "line",
             label: {
               show: true,
               position: "top",
-              textStyle: {
-                color: "#00ca95",
-              },
             },
-
-            itemStyle: {
-              color: "#00ca95",
-              borderColor: "#fff",
-              borderWidth: 3,
-              shadowColor: "rgba(0, 0, 0, .3)",
-              shadowBlur: 0,
-              shadowOffsetY: 2,
-              shadowOffsetX: 2,
+            areaStyle: {},
+            emphasis: {
+              focus: "series",
             },
-            tooltip: {
-              show: false,
-            },
-            areaStyle: {
-              normal: {
-                color: new this.$echarts.graphic.LinearGradient(
-                  0,
-                  0,
-                  0,
-                  1,
-                  [
-                    {
-                      offset: 0,
-                      color: "rgba(0,202,149,0.3)",
-                    },
-                    {
-                      offset: 1,
-                      color: "rgba(0,202,149,0)",
-                    },
-                  ],
-                  false
-                ),
-                shadowColor: "rgba(0,202,149, 0.9)",
-                shadowBlur: 20,
-              },
-            },
-            data: [281.55, 398.35, 214.02, 179.55, 289.57, 356.14],
+            data: [820, 932, 901, 934, 1290, 1330, 1320,100,300,200],
           },
         ],
-      }, */
+      },
     };
   },
   mounted() {
-    // console.log(this.$echarts.graphic.LinearGradient);
     this.initEcharts(this.option);
+    window.addEventListener('resize', this.handleResize)
   },
   methods: {
     initEcharts(option) {
-      var dom = document.getElementById("line");
+      const dom = this.$refs.chart;
       this.initChart = this.$echarts.init(dom);
       this.resChart = this.initChart.setOption(option);
     },
+    handleResize () {
+      this.initChart && this.initChart.resize()
+    }
   },
+  beforeDestroy() {
+    this.initChart && this.initChart.dispose()
+    this.initChart = null
+    window.removeEventListener('resize', this.handleResize)
+  }
 };
 </script>
 
 <style lang="less" scoped>
 #line {
-  width: 400px;
-  height: 300px;
+  margin: 50px auto;
 }
 </style>

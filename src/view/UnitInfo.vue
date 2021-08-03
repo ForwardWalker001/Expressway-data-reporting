@@ -3,30 +3,55 @@
     <el-card class="box-card">
       <!-- 面包屑 -->
       <el-breadcrumb separator-class="el-icon-arrow-right">
-        <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+        <el-breadcrumb-item >首页</el-breadcrumb-item>
         <el-breadcrumb-item>单位信息上传</el-breadcrumb-item>
       </el-breadcrumb>
       <!-- 搜索按钮区 -->
       <div class="serchBtn">
-        <el-button type="primary" size="mini" @click="serchMethod">查询</el-button>
-        <el-button type="success" size="mini" @click="serchReset">重置</el-button>
+        <el-button type="primary" size="mini" @click="serchMethod"
+          >查询</el-button>
+        <el-button type="success" size="mini" @click="serchReset"
+          >重置</el-button>
       </div>
       <!-- 搜索区 -->
       <div class="serchBox">
-        <el-input placeholder="请输入内容" size="mini" v-model="serchData.unitname">
+        <el-input
+          placeholder="请输入内容"
+          size="mini"
+          v-model="serchData.workingname"
+        >
           <template slot="prepend">单位全称</template>
         </el-input>
-        <el-input placeholder="请输入内容" size="mini" v-model="serchData.ralname">
+        <el-input
+          placeholder="请输入内容"
+          size="mini"
+          v-model="serchData.address"
+        >
           <template slot="prepend">联系人姓名</template>
         </el-input>
-        <el-input placeholder="请输入内容" size="mini" v-model="serchData.complete">
+        <el-input
+          placeholder="请输入内容"
+          size="mini"
+          v-model="serchData.personName"
+        >
+          <template slot="prepend">联系人姓名</template>
+        </el-input>
+        <el-input
+          placeholder="请输入内容"
+          size="mini"
+          v-model="serchData.status"
+        >
           <template slot="prepend">上报状态</template>
-          <el-select  slot="append" style="width:35px" v-model="serchData.complete">
-            <el-option label="未处理" value="未处理"></el-option>
-            <el-option label="已处理" value="已处理"></el-option>
+          <el-select
+            slot="append"
+            style="width: 35px"
+            v-model="serchData.status"
+          >
+            <el-option label="未上报" value="未上报"></el-option>
+            <el-option label="已上报" value="已上报"></el-option>
           </el-select>
         </el-input>
-        <el-input placeholder="请输入内容" size="mini" v-model="serchData.data">
+        <el-input placeholder="请输入内容" size="mini" v-model="serchData.time">
           <template slot="prepend">更新时间</template>
         </el-input>
       </div>
@@ -44,27 +69,47 @@
             >新增</el-button
           >
         </div>
-        <el-table ref="multipleTable" tooltip-effect="dark"  style="width: 100%" :data="tableData"
-        @selection-change="handleSelectionChange">
+        <el-table
+          ref="multipleTable"
+          tooltip-effect="dark"
+          style="width: 100%"
+          :data="tableData"
+          @selection-change="handleSelectionChange"
+        >
           <el-table-column type="selection" width="55"></el-table-column>
-          <el-table-column label="单位全称" width="120" prop="workingname"></el-table-column>
-          <el-table-column label="单位地址" width="120" prop="address"></el-table-column>
-          <el-table-column label="联系人姓名" show-overflow-tooltip prop="person_name">
+          <el-table-column
+            label="单位全称"
+            width="120"
+            prop="workingname"
+          ></el-table-column>
+          <el-table-column
+            label="单位地址"
+            width="120"
+            prop="address"
+          ></el-table-column>
+          <el-table-column
+            label="联系人姓名"
+            show-overflow-tooltip
+            prop="personName"
+          >
           </el-table-column>
-          <el-table-column label="联系人电话" show-overflow-tooltip prop="person_phone">
+          <el-table-column
+            label="联系人电话"
+            show-overflow-tooltip
+            prop="personPhone"
+          >
           </el-table-column>
           <el-table-column label="更新时间" show-overflow-tooltip prop="time">
           </el-table-column>
           <el-table-column label="上报状态" show-overflow-tooltip prop="status">
           </el-table-column>
-          <el-table-column label="下级名称" show-overflow-tooltip prop="subordinateName" v-if="!issubord">
-          </el-table-column>
           <el-table-column label="操作" show-overflow-tooltip>
             <template slot-scope="scope">
-              <el-button size="mini" @click="submitData(scope.row)">上报</el-button>
+              <el-button size="mini" @click="submitData(scope.row)" v-if="scope.row.status=='已上报'?false: true"
+                >上报</el-button>
+              <el-button size="mini" type="danger" @click="submitRomve(scope.row)">删除</el-button>
             </template>
           </el-table-column>
-          
         </el-table>
       </div>
       <!-- 分页区 -->
@@ -87,23 +132,26 @@
     >
       <el-form status-icon label-width="100px">
         <el-form-item label="单位全称">
-          <el-input autocomplete="off" v-model="newFormdata.workingname"></el-input>
+          <el-input
+            autocomplete="off"
+            v-model="newFormdata.name"
+          ></el-input>
         </el-form-item>
         <el-form-item label="单位地址">
           <el-input autocomplete="off" v-model="newFormdata.address"></el-input>
         </el-form-item>
         <el-form-item label="联系人姓名">
-          <el-input v-model="newFormdata.person_name"></el-input>
+          <el-input v-model="newFormdata.personName"></el-input>
         </el-form-item>
-         <el-form-item label="联系人电话">
-          <el-input v-model="newFormdata.person_phone"></el-input>
+        <el-form-item label="联系人电话">
+          <el-input v-model="newFormdata.personPhone"></el-input>
         </el-form-item>
-         <el-form-item label="上报状态">
+        <el-form-item label="上报状态">
           <!-- <el-input v-model="newFormdata.status"></el-input> -->
           <el-select v-model="newFormdata.status" placeholder="请选择">
-          <el-option label="已处理" value="已处理"></el-option>
-          <el-option label="未处理" value="未处理"></el-option>
-        </el-select>
+            <el-option label="已上报" value="已上报"></el-option>
+            <el-option label="未上报" value="未上报"></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="submitUnitInfoForm">提交</el-button>
@@ -121,182 +169,251 @@ export default {
       addUnitInfoDialogVisible: false,
       issubord: this.$store.state.issubord,
       pageInst: {
-        "currentPage": 1,
-        "pageSizes" : [10, 20, 30, 40],
-        "pageSize" : 5,
-        "total" : 0
+        currentPage: 1,
+        pageSizes: [10, 20, 30, 40],
+        pageSize: 5,
+        total: 0,
       },
-      serchData : {
-        unitname : '',
-        ralname:'',
-        complete: '',
-        data:''
+      serchData: {
+        workingname: "",
+        address: "",
+        personName: "",
+        time: "",
+        status: ""
       },
-      AllDatas : [],
+      AllDatas: [],
       tableData: [],
       newFormdata: {
-        workingname: '',
-        address: '',
-        person_name: '',
-        person_phone: null,
-        status: "未处理",
-        // data: '',
+        name: "",
+        address: "",
+        personName: "",
+        personPhone: null,
+        status: "未上报",
       },
     }
   },
-  mounted(){
+  mounted() {
     // this.AllDatas = Object.assign([],this.tableData)
-    this.$axios.get('http://yapi.smart-xwork.cn/mock/81866/important/exUnits')
-        .then((res)=>{
-          this.AllDatas = res.data.ExUnitList
-        }).catch((error)=> {
-          console.log(error);
-        }).then(()=>{
-          this.pageMethod(this.AllDatas)
-          this.tableData = this.AllDatas.slice(0,this.pageInst.pageSize)
-        })
-      // // 增加数据接口
-      // http://yapi.smart-xwork.cn/mock/81866/important/addexUnits
-
+    this.AllDatas = []
+    this.$axios
+      .get("http://10.11.42.189:8080/important/exUnits")
+      .then((res) => {
+        // console.log(res)
+        // console.log(this.AllDatas)
+        this.AllDatas = res.data.data.ExUnitList
+      })
+      .catch((error) => {
+        console.log(error);
+      })
+      .then(() => {
+        if(this.AllDatas){
+          this.pageMethod(this.AllDatas);
+          this.tableData = this.AllDatas.slice(0, this.pageInst.pageSize);
+        }
+      });
   },
   methods: {
-    handleCurrentChange(page){
-      this.tableData = this.AllDatas.slice(this.pageInst.pageSize*(page-1),this.pageInst.pageSize*page)
+    handleCurrentChange(page) {
+      this.tableData = this.AllDatas.slice(
+        this.pageInst.pageSize * (page - 1),
+        this.pageInst.pageSize * page
+      );
     },
-    pageMethod(datas){
-      this.pageInst.total = datas.length
-      this.tableData = datas.slice(0,this.pageInst.pageSize)
+    // 页面数据更新后，分布功能也要更新
+    pageMethod(datas) {
+      this.pageInst.total = datas.length;
+      this.tableData = datas.slice(0, this.pageInst.pageSize);
     },
     // 提交新增表单
     submitUnitInfoForm() {
-      console.log("提交单位信息表单")
-      // this.$axios.post('http://yapi.smart-xwork.cn/mock/81866/important/addexUnits',{
-      // })
-        this.$axios.post("http://yapi.smart-xwork.cn/mock/81866/important/addexUnits",{
-          ...this.newFormdata
+      console.log("提交单位信息表单");
+      this.$axios
+        .post("http://10.11.42.189:8080/important/addexUnits", {
+          ...this.newFormdata,
         })
-        .then((res)=>{
-          const status = res.data.data.res
-          if(status == 1){
+        .then((res) => {
+          const status = res.data.data.res;
+          if (status == 1) {
             this.$message({
-              type: 'success',
-              message: '提交成功!',
-              duration: 1500
-            })
-          }else{
+              type: "success",
+              message: "提交成功!",
+              duration: 1500,
+            });
+          } else {
             this.$message({
-              type: 'error',
-              message: '提交失败!',
-              duration: 1500
-            })
+              type: "error",
+              message: "提交失败!",
+              duration: 1500,
+            });
           }
-          this.$router.go(0)
-        }).catch((error)=>{
-          console.log(error)
-          this.$message({
-              type: 'error',
-              message: '提交失败!'+error,
-              duration: 1500
-            })
+          this.$router.go(0);
         })
-      this.addUnitInfoDialogVisible = !this.addUnitInfoDialogVisible
+        .catch((error) => {
+          console.log(error);
+          this.$message({
+            type: "error",
+            message: "提交失败!" + error,
+            duration: 1500,
+          });
+        });
+      this.addUnitInfoDialogVisible = !this.addUnitInfoDialogVisible;
     },
     // 重置新增表单
     resetUnitInfoForm() {
-      console.log("重置单位信息表单")
+      console.log("重置单位信息表单");
       this.newFormdata = {
-        workingname: '',
-        address: '',
-        person_name: '',
+        workingname: "",
+        address: "",
+        person_name: "",
         person_phone: null,
         status: "未处理",
-          // data: '',
-        }
+        // data: '',
+      };
       // this.addUnitInfoDialogVisible = !this.addUnitInfoDialogVisible
     },
     // 上报表格内容
-    submitData(row){
+    submitData(row) {
       // console.log(row)
-      if(row){
-        this.$message({
-          type: 'success',
-          message: '上报成功!',
-          duration: 1500
+      this.$axios.get(`http://10.11.42.189:8080/important/sendInfo3/${row.id}`)
+      .then((res)=>{
+        console.log(res)
+        if(res.data.success){
+          this.$message({
+              type: "success",
+              message: "上报成功!",
+              duration: 1500,
+            });
+        }else{
+          this.$message({
+          type: "error",
+          message: "上报失败!",
+          duration: 1500,
         });
-      }
-    },
-
-    // 搜索
-    serchMethod(){
-      const len = this.AllDatas.length
-      const showData = []
-      if(this.serchData.unitname==""&&this.serchData.ralname==""&&this.serchData.data==""&&
-      this.serchData.complete==""){
-        return
-      }
-      for(let i=0;i<len;i++){
-        if((this.serchData.unitname==""||this.serchData.unitname==this.AllDatas[i].workingname) &&
-            (this.serchData.ralname==""||this.serchData.ralname==this.AllDatas[i].person_name) &&
-            (this.serchData.data==""||this.serchData.data==this.AllDatas[i].time) &&
-            (this.serchData.complete==""||this.serchData.complete==this.AllDatas[i].status)){
-              showData.push(this.AllDatas[i])
-            }
         }
-      this.tableData = showData
-      this.pageMethod(this.tableData)
+      }).catch((error)=>{
+        this.$message({
+          type: "error",
+          message: "上报失败!" +error,
+          duration: 1500,
+        })
+      })
+    },
+    submitRomve(row){
+      // console.log(row.id)
+      this.$axios.get(`http://10.11.42.189:8080/important/deleteExUnit/${row.id}`)
+      .then((res)=>{
+        console.log(res)
+        if(res.data.success){
+          this.$message({
+              type: "success",
+              message: "删除成功!",
+              duration: 1500,
+            });
+        }else{
+          this.$message({
+          type: "error",
+          message: "删除失败!",
+          duration: 1500,
+        });
+        }
+      }).catch((error)=>{
+        this.$message({
+          type: "error",
+          message: "删除失败!" +error,
+          duration: 1500,
+        })
+      })
+    },
+    // 搜索
+    serchMethod() {
+      // console.log({...this.serchData})
+      this.$axios.get("http://10.11.42.189:8080/important/selectExUnits",{
+        params: {
+          ...this.serchData
+        }
+      })
+      .then((res)=>{
+        console.log(res.data)
+        if(res.data.success){
+          this.tableData = res.data.data.list
+        }else{
+          this.tableData = []
+        }
+      }).catch((error)=>{
+        console.log(error)
+      }).then(()=>{
+        this.pageMethod(this.tableData)
+      })
     },
     // 搜索重置
-    serchReset(){
+    serchReset() {
       this.serchData = {
-        unitname : '',
-        ralname:'',
-        complete: '',
-        data:''
-      }
+        workingname: "",
+        address: "",
+        personName: "",
+        time: "",
+        status: ""
+      },
       // this.pageInst.currentPage = 1
-      this.pageMethod(this.AllDatas)
+      this.pageMethod(this.AllDatas);
     },
     // 全选框要删除或上报的内容
-    handleSelectionChange(val){
-      console.log(val)
-      this.selectData = val
+    handleSelectionChange(val) {
+      console.log(val);
+      this.selectData = []
+      for(let i=0;i<val.length;i++){
+        this.selectData.push(val[i].id)
+      }
     },
     // 全选框删除
     open() {
-      if( this.selectData && this.selectData.length>0){
-      this.$confirm('是否删除', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        //请求内容。。。
-        // ...
-        this.$message({
-          type: 'success',
-          message: '删除成功!',
-          duration: 1500
-        });
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除',
-          duration: 1500
-        });          
-      });
+      if (this.selectData && this.selectData.length > 0) {
+        this.$confirm("是否删除", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning",
+        })
+          .then(() => {
+            //请求内容。。。
+            // ...
+            console.log(this.selectData)
+            this.$axios.get(`http://10.11.42.189:8080/important/deleteExUnits/${this.selectData[0].id}`)
+            .then((res)=>{
+              console.log(res.data)
+              this.$message({
+              type: "success",
+              message: "删除成功!",
+              duration: 1500,
+            })
+            }).catch((error)=>{
+                this.$message({
+                type: "error",
+                message: "删除失败!" + error,
+                duration: 1500,
+              })
+            })
+          })
+          .catch(() => {
+            this.$message({
+              type: "info",
+              message: "已取消删除",
+              duration: 1500,
+            });
+          });
       }
     },
     // 全选框上报
-    submit(){
-      if( this.selectData && this.selectData.length>0){
-        console.log(this.selectData)
+    submit() {
+      if (this.selectData && this.selectData.length > 0) {
+        console.log(this.selectData);
         this.$message({
-          type: 'success',
-          message: '上报成功!',
-          duration: 1500
+          type: "success",
+          message: "上报成功!",
+          duration: 1500,
         });
       }
     },
-  }
+  },
 };
 </script>
 

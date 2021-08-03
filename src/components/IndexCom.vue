@@ -1,14 +1,6 @@
 <template>
     <div >
-        <!-- <img id="img" src="../assets/Ahlogo.png" alt="加载中"> -->
         <span class="span" id="img">数据上报系统</span>
-        <router-link to="/index"></router-link>
-        <router-link to="/infoSys"></router-link>
-        <router-link to="/unitSys"></router-link>
-        <router-link to="/ComroomSys"></router-link>
-        <router-link to="/hardwareSys"></router-link>
-        <router-link to="/threaten"></router-link>
-        <router-link to="/connectTest"></router-link>
         <el-container>
             <el-header style="height:30px; padding:0">
                 <head-bar></head-bar>

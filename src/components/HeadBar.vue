@@ -5,56 +5,12 @@
     background-color="#545c64"
     text-color="#fff"
     active-text-color="#ffd04b">
-    <!-- <span id="span">数据上报系统</span> -->
-    <!-- :default-active="active" -->
-    <!-- @select="handleSelect" -->
-    <!-- <el-menu-item index="/index" style="margin-right:100px;height: 50px;
-    line-height: 50px;">处理中心</el-menu-item>
-    <el-menu-item class="userbut" index="/user" style="height: 50px;
-    line-height: 50px;">
-      <div>
-        <el-avatar :size="20" src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png"></el-avatar>
-        <span> 用户名</span>
-      </div> 
-    </el-menu-item> -->
   </el-menu>
 </template>
 
 <script>
 export default {
-  // data() {
-  //   return {
-  //     active: '/index'
-  //   };
-  // },
-  // mounted(){
-  //   if(this.$route.path == '/user')this.active = '/user'
-  //   else{
-  //     this.active = '/index'
-  //   }
-  // },
-  // methods: {
-  //   handleSelect(key) {
-  //     if(key == '/user' && this.$route.path !="/user")this.$router.push('/user')
-  //     else if(key == '/index' && this.$route.path !="/index"){
-  //       this.$router.push('/index')
-  //     }
-  //   },
-  // },
-  // watch:{
-  //   $route: {
-  //     handler:function(to){
-  //       console.log('1' + to.path)
-
-  //       this.active = to.path
-  //       if(to.path!=='/index'&&to.path!=='/user'){
-  //         this.active = '/index'
-  //       }
-  //       console.log(this.active)
-  //     },
-  //     deep: true
-  //   }
-  // }
+ 
 };
 </script>
  <style scoped>

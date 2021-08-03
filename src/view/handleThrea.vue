@@ -4,47 +4,8 @@
       <el-breadcrumb-item>首页</el-breadcrumb-item>
       <el-breadcrumb-item>威胁情报信息</el-breadcrumb-item>
     </el-breadcrumb>
-    <div class="serchBtn">
-      <el-button type="primary" size="mini" @click="serchMethod"
-        >查询</el-button
-      >
-      <el-button type="success" size="mini" @click="serchReset">重置</el-button>
-    </div>
     <!-- 搜索区 -->
-    <div class="serchBox">
-      <el-input
-        placeholder="请输入内容"
-        size="mini"
-        v-model="serchData.enrichmentsThreatTypeLevel"
-      >
-        <template slot="prepend">所属威胁等级</template>
-      </el-input>
-      <el-input
-        placeholder="请输入内容"
-        size="mini"
-        v-model="serchData.enrichmentsGeoIpSrcAddrCountryCn"
-      >
-        <template slot="prepend">源ip所属地区名称</template>
-      </el-input>
-      <el-input
-        placeholder="请输入内容"
-        size="mini"
-        v-model="serchData.enrichmentsGeoIpDstAddrCountryCn"
-      >
-        <template slot="prepend">目的IP所属地区名称</template>
-      </el-input>
-      <el-input placeholder="请输入内容" size="mini" v-model="serchData.enrichmentsThreatTypeAlias">
-        <template slot="prepend">威胁的具体类型</template>
-      </el-input>
-    </div>
-    <el-button
-      type="success"
-      size="mini"
-      style="float: right; margin: 0 0 20px"
-      @click="addUnitInfoDialogVisible = true"
-      >新增</el-button
-    >
-    <el-table :data="tableData" border style="width: 100%">
+    <el-table :data="tableData" border style="width: 100%;margin-top:30px">
       <el-table-column
         align="center" fixed
         prop="enrichmentsThreatTypeLevel"
@@ -198,11 +159,7 @@
             type="text"
             size="medium"
             v-if="scope.row.status == 0"
-            >上传</el-button
-          >
-          <el-button type="text" size="medium" @click="remove(scope.row)"
-            >删除</el-button
-          >
+            >上传</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -217,38 +174,6 @@
       >
       </el-pagination>
     </div>
-    <el-dialog
-      title="威胁情报上传"
-      :visible.sync="addUnitInfoDialogVisible"
-      width="40%"
-    >
-      <el-form status-icon label-width="100px">
-        <el-form-item>
-          <el-upload
-            class="upload-demo"
-            ref="upload"
-            action="http://10.11.44.74:8888/test/threatintelligence/getInformation"
-            name="originalFile"
-            :on-error="handleError"
-            :on-success="handleSuccess"
-            :file-list="fileList"
-            :auto-upload="false"
-          >
-            <el-button slot="trigger" size="small" type="primary"
-              >选取文件</el-button
-            >
-            <el-button
-              style="margin-left: 10px"
-              size="small"
-              type="success"
-              @click="submitUpload"
-              >提交</el-button
-            >
-            <div slot="tip" class="el-upload__tip">请上传包含威胁信息的文件</div>
-          </el-upload>
-        </el-form-item>
-      </el-form>
-    </el-dialog>
   </el-card>
 </template>
 
@@ -256,19 +181,12 @@
 export default {
   data() {
     return {
-      addUnitInfoDialogVisible: false,
       fileList: [],
       pageInst: {
         currentPage: 1,
         pageSizes: [10, 20, 30, 40],
         pageSize: 5,
         total: 0,
-      },
-      serchData: {
-        enrichmentsThreatTypeLevel: "",
-        enrichmentsGeoIpSrcAddrCountryCn: "",
-        enrichmentsThreatTypeAlias: "",
-        enrichmentsGeoIpDstAddrCountryCn: "",
       },
       AllDatas: [],
       tableData: [],
@@ -288,36 +206,7 @@ export default {
       this.pageInst.total = datas.length;
       this.tableData = datas.slice(0, this.pageInst.pageSize);
     },
-    serchMethod() {
-      this.$axios
-        .post("http://10.11.44.74:8888/test/threatintelligence/findByCondition", {
-            ...this.serchData,
-        })
-        .then((res) => {
-          if (res.data.success) {
-            this.tableData = res.data.data.wraperList;
-          } else {
-            this.tableData = [];
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        })
-        .then(() => {
-          this.pageMethod(this.tableData);
-        });
-    },
-    // 搜索重置
-    serchReset() {
-      this.serchData = {
-        enrichmentsThreatTypeLevel: "",
-        enrichmentsGeoIpSrcAddrCountryCn: "",
-        enrichmentsThreatTypeAlias: "",
-        enrichmentsGeoIpDstAddrCountryCn: "",
-      },
-        // this.pageInst.currentPage = 1
-        this.pageMethod(this.AllDatas);
-    },
+    // 定时查询
     setIntervalData() {
       let i = 0;
       this.timer = setInterval(() => {
@@ -342,31 +231,6 @@ export default {
         });
     },
 
-    submitUpload() {
-      this.$refs.upload.submit();
-    },
-    handleError(err) {
-      this.$message({
-        type: "error",
-        message: "上传失败!" + err,
-        duration: 1500,
-      });
-    },
-    handleSuccess(res) {
-      if (res.success) {
-        this.$message({
-          type: "success",
-          message: "上传成功!",
-          duration: 1500,
-        });
-      } else {
-        this.$message({
-          type: "error",
-          message: "上传失败!",
-          duration: 1500,
-        });
-      }
-    },
     handleClick(row) {
       this.$axios
         .get(
@@ -398,51 +262,6 @@ export default {
         });
       // location.reload()
     },
-    remove(row) {
-      // console.log(row.id);
-      this.$confirm("是否删除", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
-      })
-        .then(() => {
-          //请求内容。。。
-          this.$axios
-            .get(
-              `http://10.11.44.74:8888/test/threatintelligence/deleteInfromation/${row.id}`
-            )
-            .then((res) => {
-              // console.log(res.data)
-              if (res.data.success) {
-                this.$message({
-                  type: "success",
-                  message: "删除成功!",
-                  duration: 1500,
-                });
-              } else {
-                this.$message({
-                  type: "error",
-                  message: "删除失败!",
-                  duration: 1500,
-                });
-              }
-            })
-            .catch((error) => {
-              this.$message({
-                type: "error",
-                message: "删除失败!" + error,
-                duration: 1500,
-              });
-            });
-        })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消删除",
-            duration: 1500,
-          });
-        });
-    },
     handleCurrentChange(page) {
       this.tableData = this.AllDatas.slice(
         this.pageInst.pageSize * (page - 1),
@@ -456,24 +275,5 @@ export default {
 .paginationContainer {
   float: right;
   padding-top: 15px;
-}
-.el-breadcrumb {
-  padding-bottom: 20px;
-  border-bottom: 1px solid rgb(20, 45, 87);
-}
-.serchBox {
-  margin-top: 15px;
-  display: flex;
-  flex-wrap: wrap;
-  .el-input {
-    padding-bottom: 10px;
-    padding-left: 10px;
-    width: 35%;
-  }
-}
-.serchBtn {
-  float: right;
-  margin-top: 15px;
-  padding-left: 15px;
 }
 </style>
