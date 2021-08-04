@@ -96,7 +96,8 @@ export default {
     connectTest() {
       this.$axios
         .get(
-          `test/client/isConnected/${this.inputData.ip}`
+          `test/client/isConnected/${this.inputData.ip}/${this.inputData.platformname}`,{
+          }
         )
         .then((res) => {
           console.log(res);
@@ -172,17 +173,19 @@ export default {
           },
         })
         .then((res) => {
-          // console.log(res)
+          console.log(res)
           if (res.data) {
             this.ledColor = true;
-            this.disabled = false;
+            this.disabled = true;
           } else {
             this.ledColor = false;
-            this.disabled = true;
+            this.disabled = false;
           }
         })
         .catch((error) => {
           console.log(error);
+          this.ledColor = false;
+          this.disabled = false;
         });
     },
   },

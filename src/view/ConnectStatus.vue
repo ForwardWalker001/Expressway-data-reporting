@@ -63,6 +63,7 @@ export default {
   mounted() {
     this.AllDatas = [];
     this.heartbeatCon();
+    this.setIntervalData()
   },
   beforeDestroy() {
     clearInterval(this.timer);
@@ -81,22 +82,19 @@ export default {
     },
     // 定时任务
     setIntervalData() {
-      // let i = 0;
       this.timer = setInterval(() => {
         this.heartbeatCon();
-        // console.log(++i);
       }, 3000);
     },
     heartbeatCon() {
       this.$axios
       .get("exUser/list")
       .then((res) => {
-        // console.log(res)
         this.AllDatas = res.data.data.data;
-        // this.setIntervalData();
       })
       .catch((error) => {
         console.log(error);
+        // this.ledColor = false;
       })
       .then(() => {
         if (this.AllDatas) {

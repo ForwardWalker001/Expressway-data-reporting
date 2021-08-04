@@ -3,15 +3,17 @@
     <el-card class="box-card">
       <!-- 面包屑 -->
       <el-breadcrumb separator-class="el-icon-arrow-right">
-        <el-breadcrumb-item >首页</el-breadcrumb-item>
+        <el-breadcrumb-item>首页</el-breadcrumb-item>
         <el-breadcrumb-item>单位信息上传</el-breadcrumb-item>
       </el-breadcrumb>
       <!-- 搜索按钮区 -->
       <div class="serchBtn">
         <el-button type="primary" size="mini" @click="serchMethod"
-          >查询</el-button>
+          >查询</el-button
+        >
         <el-button type="success" size="mini" @click="serchReset"
-          >重置</el-button>
+          >重置</el-button
+        >
       </div>
       <!-- 搜索区 -->
       <div class="serchBox">
@@ -25,7 +27,8 @@
         <el-input
           placeholder="请输入内容"
           size="mini"
-          v-model="serchData.address">
+          v-model="serchData.address"
+        >
           <template slot="prepend">联系人姓名</template>
         </el-input>
         <el-input
@@ -104,10 +107,18 @@
           </el-table-column>
           <el-table-column label="操作" show-overflow-tooltip>
             <template slot-scope="scope">
-              <el-button size="mini" type="danger" @click="submitRomve(scope.row)">删除</el-button>
-              <el-button size="mini" @click="submitData(scope.row)" v-if="scope.row.status=='已上报'?false: true"
-                >上报</el-button>
-              
+              <el-button
+                size="mini"
+                type="danger"
+                @click="submitRomve(scope.row)"
+                >删除</el-button
+              >
+              <el-button
+                size="mini"
+                @click="submitData(scope.row)"
+                v-if="scope.row.status == '已上报' ? false : true"
+                >上报</el-button
+              >
             </template>
           </el-table-column>
         </el-table>
@@ -178,7 +189,7 @@ export default {
         address: "",
         personName: "",
         time: "",
-        status: ""
+        status: "",
       },
       AllDatas: [],
       tableData: [],
@@ -189,20 +200,20 @@ export default {
         personPhone: null,
         status: "未上报",
       },
-    }
+    };
   },
   mounted() {
-    this.AllDatas = []
+    this.AllDatas = [];
     this.$axios
       .get("exUint/list")
       .then((res) => {
-        this.AllDatas = res.data.data.data
+        this.AllDatas = res.data.data.data;
       })
       .catch((error) => {
         console.log(error);
       })
       .then(() => {
-        if(this.AllDatas){
+        if (this.AllDatas) {
           this.pageMethod(this.AllDatas);
           this.tableData = this.AllDatas.slice(0, this.pageInst.pageSize);
         }
@@ -234,7 +245,7 @@ export default {
               message: "提交成功!",
               duration: 1500,
             });
-            this.$router.go(0)
+            this.$router.go(0);
           } else {
             this.$message({
               type: "error",
@@ -264,37 +275,38 @@ export default {
         personPhone: null,
         status: "未上报",
       };
-      // this.addUnitInfoDialogVisible = !this.addUnitInfoDialogVisible
     },
     // 上报表格内容
     submitData(row) {
       // console.log(row)
-      this.$axios.post('exUint/send',{
-        ...row
-      })
-      .then((res)=>{
-        if(res.data.success){
-          this.$message({
+      this.$axios
+        .post("exUint/send", {
+          ...row,
+        })
+        .then((res) => {
+          if (res.data.success) {
+            this.$message({
               type: "success",
               message: "上报成功!",
               duration: 1500,
             });
-        }else{
-          this.$message({
-          type: "error",
-          message: "上报失败!",
-          duration: 1500,
-        });
-        }
-      }).catch((error)=>{
-        this.$message({
-          type: "error",
-          message: "上报失败!" +error,
-          duration: 1500,
+          } else {
+            this.$message({
+              type: "error",
+              message: "上报失败!",
+              duration: 1500,
+            });
+          }
         })
-      })
+        .catch((error) => {
+          this.$message({
+            type: "error",
+            message: "上报失败!" + error,
+            duration: 1500,
+          });
+        });
     },
-        submitRomve(row) {
+    submitRomve(row) {
       console.log(row.id);
       this.$axios
         .delete(`exUint/delete/${row.id}`)
@@ -306,7 +318,7 @@ export default {
               message: "删除成功!",
               duration: 1500,
             });
-            this.$router.go(0)
+            this.$router.go(0);
           } else {
             this.$message({
               type: "error",
@@ -326,42 +338,42 @@ export default {
     // 搜索
     serchMethod() {
       // console.log({...this.serchData})
-      this.$axios.get("important/selectExUnits",{
-        params: {
-          ...this.serchData
-        }
-      })
-      .then((res)=>{
-        console.log(res.data)
-        if(res.data.success){
-          this.tableData = res.data.data.list
-        }else{
-          this.tableData = []
-        }
-      }).catch((error)=>{
-        console.log(error)
-      }).then(()=>{
-        this.pageMethod(this.tableData)
-      })
+      this.$axios.post("exUnit/findByCondition", {
+							...this.serchData
+					})
+        .then((res) => {
+          console.log(res.data);
+          if (res.data.success) {
+            this.tableData = res.data.data.list;
+          } else {
+            this.tableData = [];
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        })
+        .then(() => {
+          this.pageMethod(this.tableData);
+        });
     },
     // 搜索重置
     serchReset() {
-      this.serchData = {
+      (this.serchData = {
         workingname: "",
         address: "",
         personName: "",
         time: "",
-        status: ""
-      },
-      // this.pageInst.currentPage = 1
-      this.pageMethod(this.AllDatas);
+        status: "",
+      }),
+        // this.pageInst.currentPage = 1
+        this.pageMethod(this.AllDatas);
     },
     // 全选框要删除或上报的内容
     handleSelectionChange(val) {
       console.log(val);
-      this.selectData = []
-      for(let i=0;i<val.length;i++){
-        this.selectData.push(val[i].id)
+      this.selectData = [];
+      for (let i = 0; i < val.length; i++) {
+        this.selectData.push(val[i].id);
       }
     },
     // 全选框删除
@@ -377,21 +389,22 @@ export default {
               .post(`exUint/deleteBatch`, {
                 Ids: this.selectData,
               })
-            .then((res)=>{
-              console.log(res.data)
-              this.$message({
-              type: "success",
-              message: "删除成功!",
-              duration: 1500,
-            })
-            this.$router.go(0);
-            }).catch((error)=>{
+              .then((res) => {
+                console.log(res.data);
                 this.$message({
-                type: "error",
-                message: "删除失败!" + error,
-                duration: 1500,
+                  type: "success",
+                  message: "删除成功!",
+                  duration: 1500,
+                });
+                this.$router.go(0);
               })
-            })
+              .catch((error) => {
+                this.$message({
+                  type: "error",
+                  message: "删除失败!" + error,
+                  duration: 1500,
+                });
+              });
           })
           .catch(() => {
             this.$message({
