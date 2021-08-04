@@ -7,7 +7,7 @@ import store from './store/store.js'
 import * as echarts from 'echarts'
 import axios from 'axios'
 
-
+axios.defaults.baseURL = 'http://10.11.44.74:8888'
 Vue.prototype.$axios = axios
 Vue.prototype.$echarts = echarts
 Vue.use(ElementUI);

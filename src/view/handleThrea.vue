@@ -10,8 +10,7 @@
         align="center" fixed
         prop="enrichmentsThreatTypeLevel"
         label="所属威胁等级"
-        width="120"
-      >
+        width="120">
       </el-table-column>
       <el-table-column
         align="center"
@@ -140,28 +139,6 @@
       </el-table-column>
       <el-table-column align="center" prop="timestamp" label="时间" width="120">
       </el-table-column>
-      <el-table-column
-        align="center"
-        fixed="right"
-        prop="status"
-        label="发布状态"
-        width="120"
-      >
-        <template slot-scope="scope">
-          <span v-if="scope.row.status == 1">已发布</span>
-          <span v-else>未发布</span>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" fixed="right" label="操作" width="120">
-        <template slot-scope="scope">
-          <el-button
-            @click="handleClick(scope.row)"
-            type="text"
-            size="medium"
-            v-if="scope.row.status == 0"
-            >上传</el-button>
-        </template>
-      </el-table-column>
     </el-table>
     <!-- hide-on-single-page -->
     <div class="paginationContainer">
@@ -194,8 +171,20 @@ export default {
   },
   mounted() {
     this.AllDatas = [];
-    this.updateData();
-    // this.setIntervalData();
+    this.$axios.get('datareporting/threatIntelligenceDown/selectAll')
+      .then((res) => {
+        console.log(res)
+        this.AllDatas = res.data.data.informationDown
+      })
+      .catch((error) => {
+        console.log(error);
+      })
+      .then(() => {
+        if(this.AllDatas){
+          this.pageMethod(this.AllDatas);
+          this.tableData = this.AllDatas.slice(0, this.pageInst.pageSize);
+        }
+      });
 
   },
   beforeDestroy() {
@@ -206,62 +195,7 @@ export default {
       this.pageInst.total = datas.length;
       this.tableData = datas.slice(0, this.pageInst.pageSize);
     },
-    // 定时查询
-    setIntervalData() {
-      let i = 0;
-      this.timer = setInterval(() => {
-        this.updateData();
-        console.log(++i);
-      }, 3000);
-    },
-    updateData() {
-      this.$axios
-        .get(
-          "http://10.11.44.74:8888/test/threatintelligence/selectAllInformation"
-        )
-        .then((res) => {
-          this.AllDatas = res.data.data.InformationList;
-        })
-        .catch((error) => {
-          console.log(error);
-        })
-        .then(() => {
-          this.pageMethod(this.AllDatas)
-          this.tableData = this.AllDatas.slice(0, this.pageInst.pageSize);
-        });
-    },
 
-    handleClick(row) {
-      this.$axios
-        .get(
-          `http://10.11.44.74:8888/test/threatintelligence/sendInfromation/${row.id}`
-        )
-        .then((res) => {
-          console.log(res.data);
-          if (res.data.success) {
-            this.$message({
-              type: "success",
-              message: "上传成功!",
-              duration: 1500,
-            });
-          } else {
-            this.$message({
-              type: "error",
-              message: "上传失败!",
-              duration: 1500,
-            });
-          }
-        })
-        .catch((error) => {
-          // console.log(error)
-          this.$message({
-            type: "error",
-            message: "上传失败!" + error,
-            duration: 1500,
-          });
-        });
-      // location.reload()
-    },
     handleCurrentChange(page) {
       this.tableData = this.AllDatas.slice(
         this.pageInst.pageSize * (page - 1),

@@ -25,8 +25,7 @@
         <el-input
           placeholder="请输入内容"
           size="mini"
-          v-model="serchData.address"
-        >
+          v-model="serchData.address">
           <template slot="prepend">联系人姓名</template>
         </el-input>
         <el-input
@@ -105,9 +104,10 @@
           </el-table-column>
           <el-table-column label="操作" show-overflow-tooltip>
             <template slot-scope="scope">
+              <el-button size="mini" type="danger" @click="submitRomve(scope.row)">删除</el-button>
               <el-button size="mini" @click="submitData(scope.row)" v-if="scope.row.status=='已上报'?false: true"
                 >上报</el-button>
-              <el-button size="mini" type="danger" @click="submitRomve(scope.row)">删除</el-button>
+              
             </template>
           </el-table-column>
         </el-table>
@@ -134,7 +134,7 @@
         <el-form-item label="单位全称">
           <el-input
             autocomplete="off"
-            v-model="newFormdata.name"
+            v-model="newFormdata.workingname"
           ></el-input>
         </el-form-item>
         <el-form-item label="单位地址">
@@ -147,7 +147,6 @@
           <el-input v-model="newFormdata.personPhone"></el-input>
         </el-form-item>
         <el-form-item label="上报状态">
-          <!-- <el-input v-model="newFormdata.status"></el-input> -->
           <el-select v-model="newFormdata.status" placeholder="请选择">
             <el-option label="已上报" value="已上报"></el-option>
             <el-option label="未上报" value="未上报"></el-option>
@@ -184,7 +183,7 @@ export default {
       AllDatas: [],
       tableData: [],
       newFormdata: {
-        name: "",
+        workingname: "",
         address: "",
         personName: "",
         personPhone: null,
@@ -193,14 +192,11 @@ export default {
     }
   },
   mounted() {
-    // this.AllDatas = Object.assign([],this.tableData)
     this.AllDatas = []
     this.$axios
-      .get("http://10.11.42.189:8080/important/exUnits")
+      .get("exUint/list")
       .then((res) => {
-        // console.log(res)
-        // console.log(this.AllDatas)
-        this.AllDatas = res.data.data.ExUnitList
+        this.AllDatas = res.data.data.data
       })
       .catch((error) => {
         console.log(error);
@@ -226,19 +222,19 @@ export default {
     },
     // 提交新增表单
     submitUnitInfoForm() {
-      console.log("提交单位信息表单");
       this.$axios
-        .post("http://10.11.42.189:8080/important/addexUnits", {
+        .post("exUint/save", {
           ...this.newFormdata,
         })
         .then((res) => {
-          const status = res.data.data.res;
-          if (status == 1) {
+          const status = res.data.success;
+          if (status) {
             this.$message({
               type: "success",
               message: "提交成功!",
               duration: 1500,
             });
+            this.$router.go(0)
           } else {
             this.$message({
               type: "error",
@@ -246,7 +242,7 @@ export default {
               duration: 1500,
             });
           }
-          this.$router.go(0);
+          // this.$router.go(0);
         })
         .catch((error) => {
           console.log(error);
@@ -264,19 +260,19 @@ export default {
       this.newFormdata = {
         workingname: "",
         address: "",
-        person_name: "",
-        person_phone: null,
-        status: "未处理",
-        // data: '',
+        personName: "",
+        personPhone: null,
+        status: "未上报",
       };
       // this.addUnitInfoDialogVisible = !this.addUnitInfoDialogVisible
     },
     // 上报表格内容
     submitData(row) {
       // console.log(row)
-      this.$axios.get(`http://10.11.42.189:8080/important/sendInfo3/${row.id}`)
+      this.$axios.post('exUint/send',{
+        ...row
+      })
       .then((res)=>{
-        console.log(res)
         if(res.data.success){
           this.$message({
               type: "success",
@@ -298,36 +294,39 @@ export default {
         })
       })
     },
-    submitRomve(row){
-      // console.log(row.id)
-      this.$axios.get(`http://10.11.42.189:8080/important/deleteExUnit/${row.id}`)
-      .then((res)=>{
-        console.log(res)
-        if(res.data.success){
-          this.$message({
+        submitRomve(row) {
+      console.log(row.id);
+      this.$axios
+        .delete(`exUint/delete/${row.id}`)
+        .then((res) => {
+          // console.log(res);
+          if (res.data.success) {
+            this.$message({
               type: "success",
               message: "删除成功!",
               duration: 1500,
             });
-        }else{
-          this.$message({
-          type: "error",
-          message: "删除失败!",
-          duration: 1500,
-        });
-        }
-      }).catch((error)=>{
-        this.$message({
-          type: "error",
-          message: "删除失败!" +error,
-          duration: 1500,
+            this.$router.go(0)
+          } else {
+            this.$message({
+              type: "error",
+              message: "删除失败!",
+              duration: 1500,
+            });
+          }
         })
-      })
+        .catch((error) => {
+          this.$message({
+            type: "error",
+            message: "删除失败!" + error,
+            duration: 1500,
+          });
+        });
     },
     // 搜索
     serchMethod() {
       // console.log({...this.serchData})
-      this.$axios.get("http://10.11.42.189:8080/important/selectExUnits",{
+      this.$axios.get("important/selectExUnits",{
         params: {
           ...this.serchData
         }
@@ -374,10 +373,10 @@ export default {
           type: "warning",
         })
           .then(() => {
-            //请求内容。。。
-            // ...
-            console.log(this.selectData)
-            this.$axios.get(`http://10.11.42.189:8080/important/deleteExUnits/${this.selectData[0].id}`)
+            this.$axios
+              .post(`exUint/deleteBatch`, {
+                Ids: this.selectData,
+              })
             .then((res)=>{
               console.log(res.data)
               this.$message({
@@ -385,6 +384,7 @@ export default {
               message: "删除成功!",
               duration: 1500,
             })
+            this.$router.go(0);
             }).catch((error)=>{
                 this.$message({
                 type: "error",
@@ -405,12 +405,34 @@ export default {
     // 全选框上报
     submit() {
       if (this.selectData && this.selectData.length > 0) {
-        console.log(this.selectData);
-        this.$message({
-          type: "success",
-          message: "上报成功!",
-          duration: 1500,
-        });
+        this.$axios
+          .post(`exUint/sendBatch`, {
+            Ids: this.selectData,
+          })
+          .then((res) => {
+            // console.log(res.data);
+            if (res.data.success) {
+              this.$message({
+                type: "success",
+                message: "上报成功!",
+                duration: 1500,
+              });
+              // this.$router.go(0);
+            } else {
+              this.$message({
+                type: "error",
+                message: "上报失败!",
+                duration: 1500,
+              });
+            }
+          })
+          .catch((error) => {
+            this.$message({
+              type: "error",
+              message: "上报失败!" + error,
+              duration: 1500,
+            });
+          });
       }
     },
   },

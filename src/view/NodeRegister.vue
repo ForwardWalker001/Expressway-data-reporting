@@ -23,13 +23,13 @@
         <el-form-item size="large">
           <el-button type="primary" @click="preservat">保存</el-button>
           <el-button @click="connectTest">连通性测试</el-button>
-          <el-button @click="register">注册</el-button>
+          <el-button @click="register" :disabled="disabled">注册</el-button>
         </el-form-item>
-        <el-form-item>
-          <div v-if="showCard" >
-            <el-tag type="success" v-if="ledColor">连接成功</el-tag>
-            <el-tag type="danger" v-else>连接失败</el-tag>
-          </div>
+        <el-form-item v-show="showCard">
+          <template>
+            <el-tag type="success" effect="dark" v-if="ledColor">已连接</el-tag>
+            <el-tag type="danger" effect="dark" v-else>未连接</el-tag>
+          </template>
         </el-form-item>
       </el-form>
     </el-card>
@@ -40,10 +40,12 @@
 export default {
   data() {
     return {
+      disabled: false,
+      tableData: [],
       showCard: false,
       text: "",
       ledColor: false,
-      inputData: JSON.parse(localStorage.getItem('inputData')) || {
+      inputData: JSON.parse(localStorage.getItem("inputData")) || {
         ip: "",
         platformname: "",
         username: "",
@@ -51,47 +53,50 @@ export default {
       },
     };
   },
-  mounted(){
+  mounted() {
     // console.log({...this.inputData})
   },
-  beforeDestroy(){
-    clearInterval(this.timer)
+  beforeDestroy() {
+    clearInterval(this.timer);
   },
   methods: {
     preservat() {
-      localStorage.setItem('inputData', JSON.stringify(this.inputData))
-      this.$axios.get('http://10.11.36.175:8888/Client/saveInfo',{
-        params: {
-          ...this.inputData
-        }
-      }).then((res)=>{
-        console.log(res.data)
-        if(res.data.success){
-          // this.ledColor = true
-          this.$message({
-            type: "success",
-            message: "保存成功!",
-            duration: 1500,
-          });
-        }else{
+      localStorage.setItem("inputData", JSON.stringify(this.inputData));
+      this.$axios
+        .get("Client/saveInfo", {
+          params: {
+            ...this.inputData,
+          },
+        })
+        .then((res) => {
+          console.log(res.data);
+          if (res.data.success) {
+            // this.ledColor = true
+            this.$message({
+              type: "success",
+              message: "保存成功!",
+              duration: 1500,
+            });
+          } else {
+            this.$message({
+              type: "error",
+              message: "保存失败!",
+              duration: 1500,
+            });
+          }
+        })
+        .catch((error) => {
           this.$message({
             type: "error",
-            message: "保存失败!",
+            message: "保存失败!" + error,
             duration: 1500,
           });
-        }
-      }).catch((error)=>{
-        this.$message({
-            type: "error",
-            message: "保存失败!"+error,
-            duration: 1500,
-          });
-      })
+        });
     },
     connectTest() {
       this.$axios
         .get(
-          `http://10.11.36.175:8888/test/client/isConnected/${this.inputData.ip}`
+          `test/client/isConnected/${this.inputData.ip}`
         )
         .then((res) => {
           console.log(res);
@@ -113,65 +118,72 @@ export default {
           // console.log(error);
           this.$message({
             type: "error",
-            message: "联通失败!"+error,
+            message: "联通失败!" + error,
             duration: 3000,
           });
         });
     },
-    register(){
-      this.showCard = true
+    register() {
+      this.showCard = true;
       // this.heartbeatCon()
-      // this.setIntervalData()
-      console.log(this.inputData)
-      this.$axios.post('http://10.11.36.175:8888/Client/register',{
-          ...this.inputData
-          // ip: this.inputData.ip,
-          // platformname: this.inputData.platformname,
-          // username: this.inputData.username,
-          // password: this.inputData.password
-      }).then((res)=>{
-        console.log(res.data)
-        if(res.data.data.isConnected){
-          // this.ledColor = true
+      this.setIntervalData()
+      this.$axios
+        .post("Client/register", {
+            ...this.inputData,
+        })
+        .then((res) => {
+          console.log(res)
+          if (res.data.data.connected) {
+            // this.ledColor = true
+            this.disabled = true
+            this.$message({
+              type: "success",
+              message: "注册成功!",
+              duration: 1500,
+            });
+          } else {
+            // this.ledColor = false
+            
+            this.$message({
+              type: "error",
+              message: "注册失败!",
+              duration: 1500,
+            });
+          }
+        })
+        .catch((error) => {
           this.$message({
-            type: "success",
-            message: "注册成功!",
-            duration: 1500,
-          });
-        }else{
-          this.$message({
-            type: "error",
-            message: "注册失败!",
-            duration: 1500,
-          });
-        }
-      }).catch((error)=>{
-        console.log(error)
-      })
+              type: "error",
+              message: "注册失败!"+error,
+              duration: 1500,
+            });
+        });
     },
     setIntervalData() {
-      let i = 0
       this.timer = setInterval(() => {
-        this.heartbeatCon()
-        console.log(++i)
+        this.heartbeatCon();
       }, 3000);
     },
-    heartbeatCon(){
-      this.$axios.get('http://10.11.44.74:8080/api/v1/heart')
-      .then((res)=>{
-        console.log(res.data)
-        if(res.data.data.isConnected){
-          this.ledColor = true
-        }else{
-          this.ledColor = false
-        }
-      }).catch((error)=>{
-        console.log(error)
-      })
-    },
-    closeCard(booolens) {
-      this.showCard = booolens;
-      // clearInterval(this.timer)
+    heartbeatCon() {
+      this.$axios
+        .get("test/client/heartStatus", {
+          params: {
+            ...this.inputData,
+          },
+        })
+        .then((res) => {
+          // console.log(res)
+          if (res.data) {
+            this.ledColor = true;
+            this.disabled = false;
+          } else {
+            this.ledColor = false;
+            this.disabled = true;
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
   },
 };

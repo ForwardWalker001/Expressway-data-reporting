@@ -28,14 +28,6 @@
         <el-input placeholder="请输入内容" size="mini" v-model="serchData.address">
           <template slot="prepend">机房地址</template>
         </el-input>
-        <!-- <el-input placeholder="请输入内容" size="mini" v-model="serchData.type">
-          <template slot="prepend">机房运营商</template>
-          <el-select slot="append" style="width:35px" v-model="serchData.type">
-            <el-option label="餐厅名" value="餐厅名"></el-option>
-            <el-option label="订单号" value="订单号"></el-option>
-            <el-option label="用户电话" value="用户电话"></el-option>
-          </el-select>
-        </el-input> -->
         <el-input placeholder="请输入内容" size="mini" v-model="serchData.time">
           <template slot="prepend">更新时间</template>
         </el-input>
@@ -44,8 +36,8 @@
       <div class="tableContainer">
         <!-- 多选删除和上报区域 -->
         <div class="ldrDelBtn">
-          <el-button type="primary" size="mini">上报</el-button>
-          <el-button type="success" size="mini">删除</el-button>
+          <el-button type="primary" size="mini" @click="submit">上报</el-button>
+          <el-button type="success" size="mini" @click="open">删除</el-button>
           <el-button
             type="success"
             size="mini"
@@ -54,7 +46,8 @@
             >新增</el-button
           >
         </div>
-        <el-table ref="multipleTable" tooltip-effect="dark" style="width: 100%">
+        <el-table ref="multipleTable" tooltip-effect="dark" style="width: 100%" :data="tableData"
+        @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="55"> </el-table-column>
           <!-- <el-table-column label="机房ID" width="120" prop="id"> </el-table-column> -->
           <el-table-column label="机房名称" width="120" prop="name"> </el-table-column>
@@ -72,8 +65,8 @@
           </el-table-column> -->
           <el-table-column label="操作" show-overflow-tooltip >
             <template>
-              <el-button size="mini" @click="submitData(scope.row)">上报</el-button>
               <el-button size="mini" type="danger" @click="submitRomve(scope.row)">删除</el-button>
+              <el-button size="mini" @click="submitData(scope.row)">上报</el-button>
               <!-- <el-button size="mini" type="danger">修改</el-button> -->
             </template>
           </el-table-column>
@@ -107,11 +100,11 @@
         <el-form-item label="机房地址">
           <el-input autocomplete="off" v-model="newFormdata.address"></el-input>
         </el-form-item>
-        <el-form-item label="联系人姓名" v-model="newFormdata.personName">
-          <el-input></el-input>
+        <el-form-item label="联系人姓名" >
+          <el-input v-model="newFormdata.personName"></el-input>
         </el-form-item>
-        <el-form-item label="邮箱" v-model="newFormdata.email">
-          <el-input></el-input>
+        <el-form-item label="邮箱" >
+          <el-input v-model="newFormdata.email"></el-input>
         </el-form-item>
         <!-- <el-form-item label="上报时间">
           <el-input></el-input>
@@ -153,8 +146,8 @@ export default {
         name: "",
         address: "",
         personName: "",
-        personPhone: null,
-        status: "未处理",
+        email: null,
+        type: "",
         // data: '',
       },
     }
@@ -163,11 +156,9 @@ export default {
     // this.AllDatas = Object.assign([],this.tableData)
     this.AllDatas = []
     this.$axios
-      .get("http://10.11.42.189:8080/important/exMachineRooms")
+      .get("exMachineRoom/list")
       .then((res) => {
-        // console.log(res)
-        // console.log(this.AllDatas)
-        this.AllDatas = res.data.data.ExUnitList
+        this.AllDatas = res.data.data.data
       })
       .catch((error) => {
         console.log(error);
@@ -193,19 +184,19 @@ export default {
     },
     // 提交新增表单
     submitUnitInfoForm() {
-      console.log("提交单位信息表单");
       this.$axios
-        .post("http://10.11.42.189:8080/important/addexMachineRooms", {
+        .post("exMachineRoom/save", {
           ...this.newFormdata,
         })
         .then((res) => {
-          const status = res.data.data.res;
+          const status = res.data.success;
           if (status == 1) {
             this.$message({
               type: "success",
               message: "提交成功!",
               duration: 1500,
             });
+            this.$router.go(0);
           } else {
             this.$message({
               type: "error",
@@ -213,7 +204,7 @@ export default {
               duration: 1500,
             });
           }
-          this.$router.go(0);
+          // this.$router.go(0);
         })
         .catch((error) => {
           console.log(error);
@@ -229,27 +220,29 @@ export default {
     resetUnitInfoForm() {
       console.log("重置单位信息表单");
       this.newFormdata = {
-        workingname: "",
+        name: "",
         address: "",
         personName: "",
-        personPhone: null,
-        status: "未处理",
+        email: null,
+        type: "",
         // data: '',
       };
-      // this.addUnitInfoDialogVisible = !this.addUnitInfoDialogVisible
     },
     // 上报表格内容
     submitData(row) {
       // console.log(row)
-      this.$axios.get(`http://10.11.42.189:8080/important/sendInfo2/${row.id}`)
+      this.$axios.post(`exMachineRoom/send`,{
+        ...row
+      })
       .then((res)=>{
-        console.log(res)
+        // console.log(res)
         if(res.data.success){
           this.$message({
               type: "success",
               message: "上报成功!",
               duration: 1500,
             });
+            this.$router.go(0)
         }else{
           this.$message({
           type: "error",
@@ -265,35 +258,38 @@ export default {
         })
       })
     },
-    submitRomve(row){
-      // console.log(row.id)
-      this.$axios.get(`http://10.11.42.189:8080/important/deleteExMachineRoom/${row.id}`)
-      .then((res)=>{
-        console.log(res)
-        if(res.data.success){
-          this.$message({
+    submitRomve(row) {
+      console.log(row.id);
+      this.$axios
+        .delete(`exMachineRoom/delete/${row.id}`)
+        .then((res) => {
+          console.log(res);
+          if (res.data.success) {
+            this.$message({
               type: "success",
               message: "删除成功!",
               duration: 1500,
             });
-        }else{
-          this.$message({
-          type: "error",
-          message: "删除失败!",
-          duration: 1500,
-        });
-        }
-      }).catch((error)=>{
-        this.$message({
-          type: "error",
-          message: "删除失败!" +error,
-          duration: 1500,
+            this.$router.go(0)
+          } else {
+            this.$message({
+              type: "error",
+              message: "删除失败!",
+              duration: 1500,
+            });
+          }
         })
-      })
+        .catch((error) => {
+          this.$message({
+            type: "error",
+            message: "删除失败!" + error,
+            duration: 1500,
+          });
+        });
     },
     // 搜索
     serchMethod() {
-      this.$axios.get("http://10.11.42.189:8080/important/selectExMachineRooms",{
+      this.$axios.get("important/selectExMachineRooms",{
         params: {
           ...this.serchData
         }
@@ -320,9 +316,10 @@ export default {
     },
     // 全选框要删除或上报的内容
     handleSelectionChange(val) {
-      console.log(val);
-      this.selectData = val;
-      
+      this.selectData = [];
+      for (let i = 0; i < val.length; i++) {
+        this.selectData.push(val[i].id);
+      }
     },
     // 全选框删除
     open() {
@@ -334,16 +331,26 @@ export default {
         })
           .then(() => {
             //请求内容。。。
-            // ...
-            console.log(this.selectData)
-            this.$axios.get(`http://10.11.42.189:8080/important/deleteExUnits/${this.selectData[0].id}`)
+            this.$axios
+              .post(`exMachineRoom/deleteBatch`, {
+                Ids: this.selectData,
+              })
             .then((res)=>{
-              console.log(res.data)
-              this.$message({
-              type: "success",
-              message: "删除成功!",
-              duration: 1500,
-            })
+              // console.log(res.data.success)
+              if (res.data.success) {
+                  this.$message({
+                    type: "success",
+                    message: "删除成功!",
+                    duration: 1500,
+                  });
+                  this.$router.go(0);
+                } else {
+                  this.$message({
+                    type: "error",
+                    message: "删除失败!",
+                    duration: 1500,
+                  });
+                }
             }).catch((error)=>{
                 this.$message({
                 type: "error",
@@ -364,14 +371,36 @@ export default {
     // 全选框上报
     submit() {
       if (this.selectData && this.selectData.length > 0) {
-        console.log(this.selectData);
-        this.$message({
-          type: "success",
-          message: "上报成功!",
-          duration: 1500,
-        });
+        this.$axios
+          .post(`exMachineRoom/sendBatch`, {
+            Ids: this.selectData,
+          })
+          .then((res) => {
+            // console.log(res.data);
+            if (res.data.success) {
+              this.$message({
+                type: "success",
+                message: "上报成功!",
+                duration: 1500,
+              });
+              // this.$router.go(0);
+            } else {
+              this.$message({
+                type: "error",
+                message: "上报失败!",
+                duration: 1500,
+              });
+            }
+          })
+          .catch((error) => {
+            this.$message({
+              type: "error",
+              message: "上报失败!" + error,
+              duration: 1500,
+            });
+          });
       }
-    },
+      },
   },
 };
 </script>

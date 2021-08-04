@@ -37,7 +37,7 @@
         </el-form-item>
       </el-form>
       <div class="footer">
-        <el-link class="left" @click="toRegist">没有账号，点击注册</el-link>
+        <!-- <el-link class="left" @click="toRegist">没有账号，点击注册</el-link> -->
         <el-link class="right" @click="getPassword">找回密码</el-link>
       </div>
     </div>
@@ -51,27 +51,13 @@ export default {
   data() {
     return {
       loginForm: {
-        userName: "root",
-        password: "root",
+        userName: "user",
+        password: "123456",
       },
       loginFormRules: {
         userName: [
-          /*  { required: true, message: "请输入登录名称", trigger: "blur" },
-          {
-            min: 3,
-            max: 10,
-            message: "长度在 3 到 10 个字符",
-            trigger: "blur",
-          }, */
         ],
         password: [
-          /*  { required: true, message: "请输入登录密码", trigger: "blur" },
-          {
-            min: 6,
-            max: 15,
-            message: "长度在 6 到 15 个字符",
-            trigger: "blur",
-          }, */
         ],
       },
     };
@@ -79,22 +65,30 @@ export default {
   methods: {
     //10.11.47.201:18888
     login() {
-      console.log("登录");
-      /*       var temp = {
-        username: this.loginForm.userName,
-        password: this.loginForm.password,
-      }; */
+
       this.$refs.loginFormRef.validate(async (validate) => {
         if (validate) {
-          var { data: res } = await this.$axios.post(
-            `http://10.11.47.201:18888/datareporting/user/login?username=${this.loginForm.userName}&password=${this.loginForm.password}`
+          var { data:res  } = await this.$axios.post(
+            `datareporting/user/login?username=${this.loginForm.userName}&password=${this.loginForm.password}`
           );
-          console.log(res);
+          // console.log(res);
           if (res.code == 20000) {
-            window.sessionStorage.setItem("userInfo", JSON.stringify(res));
-            this.$router.push("/indexCom");
+            sessionStorage.setItem("userInfo", JSON.stringify(res.data.user));
+            this.$message({
+              type: "success",
+              message: "登录成功!",
+              duration: 1500,
+            });
+            this.$router.push("/index");
+          }else{
+             this.$message({
+              type: "error",
+              message: res.message,
+              duration: 1500,
+            });
           }
         } else {
+    
           return false;
         }
       });
@@ -118,24 +112,20 @@ export default {
 <style lang="less" scoped>
 //@import "../../public/gloable/init.css";
 .login_container {
-  background-image: linear-gradient(-180deg, #1a1454 0%, #0e81a5 100%);
-  /* background-image: url("../assets/img/Login_bg_img.jpg"); */
-  background-image: url("../assets/LoginRegist_bg_img.jpg");
-  background-repeat: no-repeat;
-  background-size: cover;
-  height: 684px;
+  background-color: #2fabd2;
+  height: 100vh;
   width: 100%;
   .login_box {
     width: 500px;
     height: 290px;
     /* background-color: #fff; */
-    background-color: #2e527bb3;
+    background-color:white;
     border-radius: 5px;
     position: absolute;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
-    opacity: 0.6;
+    // opacity: 0.6;
     .header {
       position: absolute;
       top: 0px;

@@ -2,6 +2,7 @@
     <el-col class="leftBar" >
     <el-menu
       :default-active="routActive"
+      open='1'
       class="el-menu-vertical-demo"
       background-color="#545c64"
       text-color="#fff"
@@ -9,7 +10,7 @@
       router >
       <el-menu-item index="/index">
         <i class="el-icon-menu"></i>
-        <span slot="title" >首页</span>
+        <span slot="title" >可视化展示</span>
       </el-menu-item>
       <el-submenu  index="1">
         <template slot="title" >
@@ -17,34 +18,36 @@
           <span >信息上传</span>
         </template>
         <el-menu-item-group style="padding:0px">
-          <el-menu-item index="/index/unitSys" >单位信息</el-menu-item>
-          <el-menu-item index="/index/ComroomSys" >机房信息</el-menu-item>
-          <el-menu-item index="/index/infoSys" >信息系统信息</el-menu-item>
-          <el-menu-item index="/index/hardwareSys" >硬件资源信息</el-menu-item>
+          <el-menu-item index="/menuIndex/unitSys">单位信息</el-menu-item>
+          <el-menu-item index="/menuIndex/ComroomSys" >机房信息</el-menu-item>
+          <el-menu-item index="/menuIndex/infoSys" >信息系统信息</el-menu-item>
+          <el-menu-item index="/menuIndex/hardwareSys" >硬件资源信息</el-menu-item>
         </el-menu-item-group>
       </el-submenu>
-      <el-menu-item index="/index/threaten">
+      <el-menu-item index="/menuIndex/threaten">
         <i class="el-icon-warning-outline"></i>
         <span slot="title" >威胁情报</span>
       </el-menu-item>
       <el-submenu  index="2">
         <template slot="title" >
           <i class="el-icon-s-check"></i>
-          <span >信息处理</span>
+          <span >信息展示</span>
         </template>
         <el-menu-item-group style="padding:0px">
-          <!-- <el-menu-item index="1-1" ><span @click="changRou('选项1')">选项1</span></el-menu-item> -->
-          <el-menu-item index="/index/handle/unitSys" >单位信息处理</el-menu-item>
-          <el-menu-item index="/index/handle/ComroomSys" >机房信息处理</el-menu-item>
-          <el-menu-item index="/index/handle/infoSys" >信息系统处理</el-menu-item>
-          <el-menu-item index="/index/handle/hardwareSys" >硬件资源处理</el-menu-item>
-          <el-menu-item index="/index/handle/threaten" >威胁情报处理</el-menu-item>
+          <el-menu-item index="/menuIndex/handle/unitSys" >单位信息</el-menu-item>
+          <el-menu-item index="/menuIndex/handle/ComroomSys" >机房信息</el-menu-item>
+          <el-menu-item index="/menuIndex/handle/infoSys" >信息系统</el-menu-item>
+          <el-menu-item index="/menuIndex/handle/hardwareSys" >硬件资源</el-menu-item>
+          <el-menu-item index="/menuIndex/handle/threaten" >威胁情报</el-menu-item>
         </el-menu-item-group>
       </el-submenu>
-      
-      <el-menu-item index="/index/connectTest">
+      <el-menu-item index="/menuIndex/connectTest">
         <i class="el-icon-setting"></i>
         <span slot="title">节点注册</span>
+      </el-menu-item>
+      <el-menu-item index="/menuIndex/ConnectStatus">
+        <i class="el-icon-s-operation"></i>
+        <span slot="title">节点连接状态</span>
       </el-menu-item>
     </el-menu>
   </el-col>
@@ -54,6 +57,7 @@
   export default {
     data(){
       return {
+        // collapse:true,
         routActive : this.$route.path
       }
     },
@@ -61,12 +65,7 @@
       
     },
     methods: {
-      // handleOpen(key, keyPath) {
-      //   console.log(key, keyPath);
-      // },
-      // handleClose(key, keyPath) {
-      //   console.log(key, keyPath);
-      // },
+
     },
   }
 </script>
@@ -75,9 +74,6 @@
 .el-submenu .el-menu-item{
   min-width: 130px;
 }
-/* .el-menu-item-group__title {
-     padding: 0px !important;
-} */
 .leftBar {
   /* width:130px;  */
   height:calc(100vh - 30px);

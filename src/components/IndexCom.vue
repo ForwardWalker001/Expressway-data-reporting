@@ -9,7 +9,7 @@
             <el-aside width="150px" style="background-color:#545c64">
                 <left-bar></left-bar>
             </el-aside>
-            <el-main>
+            <el-main style="padding:20px">
                 <router-view id="content"></router-view>
             </el-main>
             </el-container>
@@ -20,19 +20,19 @@
 <script>
 import HeadBar from './HeadBar.vue'
 import LeftBar from './LeftBar.vue'
-// import MainCom from './MainCom.vue'
 
 export default {
     components: {
         HeadBar,
-        LeftBar,
-        // MainCom
+        LeftBar
     },
     data(){
         return{
+           
         }
     },
-    mounted(){
+    created(){
+        
     },
     methods:{
         
@@ -41,7 +41,6 @@ export default {
 </script>
 
 <style scoped>
-
 #img {
     width: 150px;
     height: 46px;
@@ -56,5 +55,8 @@ export default {
    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
    font-size: 16px;
    text-align: center;
+ }
+ .el-main{
+     padding: 0px;
  }
 </style>

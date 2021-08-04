@@ -8,8 +8,12 @@
       </el-breadcrumb>
       <!-- 搜索按钮区 -->
       <div class="serchBtn">
-        <el-button type="primary" size="mini" @click="serchMethod">查询</el-button>
-        <el-button type="success" size="mini" @click="serchReset">重置</el-button>
+        <el-button type="primary" size="mini" @click="serchMethod"
+          >查询</el-button
+        >
+        <el-button type="success" size="mini" @click="serchReset"
+          >重置</el-button
+        >
       </div>
       <!-- 搜索区 -->
       <div class="serchBox">
@@ -18,20 +22,15 @@
         </el-input>
         <el-input placeholder="请输入内容" size="mini" v-model="serchData.type">
           <template slot="prepend">硬件分类</template>
-          <el-select slot="append" style="width:35px" v-model="serchData.type">
-            <el-option label="餐厅名" value="餐厅名"></el-option>
-            <el-option label="订单号" value="订单号"></el-option>
-            <el-option label="用户电话" value="用户电话"></el-option>
-          </el-select>
         </el-input>
         <!-- <el-input placeholder="请输入内容" size="mini"  v-model="serchData.time">
           <template slot="prepend">硬件IP</template>
         </el-input> -->
-        <el-input placeholder="请输入内容" size="mini"  v-model="serchData.time">
+        <el-input placeholder="请输入内容" size="mini" v-model="serchData.time">
           <template slot="prepend">时间</template>
         </el-input>
       </div>
-      
+
       <!-- 表格区 -->
       <div class="tableContainer">
         <!-- 多选删除和上报区域 -->
@@ -46,31 +45,54 @@
             >新增</el-button
           >
         </div>
-        <el-table ref="multipleTable" tooltip-effect="dark" style="width: 100%"
-        :data="tableData"
-        @selection-change="handleSelectionChange"
+        <el-table
+          ref="multipleTable"
+          tooltip-effect="dark"
+          style="width: 100%"
+          :data="tableData"
+          @selection-change="handleSelectionChange"
         >
           <el-table-column type="selection" width="55"> </el-table-column>
           <!-- <el-table-column label="硬件id" width="120" prop="id"> </el-table-column> -->
-          <el-table-column label="硬件名称" width="120" prop="name"> </el-table-column>
-          <el-table-column label="硬件类型" show-overflow-tooltip prop="type">
+          <el-table-column label="硬件名称" width="120" prop="name">
+          </el-table-column>
+          <el-table-column label="硬件分类" show-overflow-tooltip prop="type">
           </el-table-column>
           <!-- <el-table-column label="硬件分类" show-overflow-tooltip prop="id">
           </el-table-column> -->
-          <el-table-column label="联系人" show-overflow-tooltip prop="personName">
+          <el-table-column
+            label="联系人"
+            show-overflow-tooltip
+            prop="personName"
+          >
           </el-table-column>
           <el-table-column label="地址" show-overflow-tooltip prop="address">
           </el-table-column>
-          <el-table-column label="联系人电话" show-overflow-tooltip prop="personPhone">
+          <el-table-column
+            label="联系人电话"
+            show-overflow-tooltip
+            prop="personPhone"
+          >
           </el-table-column>
-          <el-table-column label="最近更新时间" show-overflow-tooltip prop="time">
+          <el-table-column
+            label="最近更新时间"
+            show-overflow-tooltip
+            prop="time"
+          >
           </el-table-column>
           <!-- <el-table-column label="上报状态" show-overflow-tooltip prop="id">
           </el-table-column> -->
           <el-table-column label="操作" show-overflow-tooltip>
             <template slot-scope="scope">
-              <el-button size="mini"  @click="submitData(scope.row)">上报</el-button>
-              <el-button size="mini" type="danger" @click="submitRomve(scope.row)" >删除</el-button>
+              <el-button
+                size="mini"
+                type="danger"
+                @click="submitRomve(scope.row)"
+                >删除</el-button
+              >
+              <el-button size="mini" @click="submitData(scope.row)"
+                >上报</el-button
+              >
               <!-- <el-button size="mini" type="danger">修改</el-button> -->
             </template>
           </el-table-column>
@@ -80,7 +102,6 @@
       <div class="paginationContainer">
         <el-pagination
           :current-page="pageInst.currentPage"
-          
           :page-size="pageInst.pageSize"
           layout="total, prev, pager, next, jumper"
           :total="pageInst.total"
@@ -93,10 +114,11 @@
     <el-dialog
       title="新增硬件资源信息"
       :visible.sync="addUnitInfoDialogVisible"
-      width="40%" top="50px"
+      width="40%"
+      top="50px"
     >
       <el-form status-icon label-width="100px">
-        <el-form-item label="硬件名称" >
+        <el-form-item label="硬件名称">
           <el-input autocomplete="off" v-model="newFormdata.name"></el-input>
         </el-form-item>
         <el-form-item label="硬件分类">
@@ -105,10 +127,10 @@
         <el-form-item label="联系人">
           <el-input v-model="newFormdata.personName"></el-input>
         </el-form-item>
-         <el-form-item label="联系人电话">
+        <el-form-item label="联系人电话">
           <el-input v-model="newFormdata.personPhone"></el-input>
         </el-form-item>
-         <el-form-item label="地址">
+        <el-form-item label="地址">
           <el-input v-model="newFormdata.address"></el-input>
         </el-form-item>
         <el-form-item>
@@ -144,26 +166,23 @@ export default {
         address: "",
         personName: "",
         personPhone: null,
-        status: "未处理",
+        type: "",
         // data: '',
       },
-    }
+    };
   },
   mounted() {
-    // this.AllDatas = Object.assign([],this.tableData)
-    this.AllDatas = []
+    this.AllDatas = [];
     this.$axios
-      .get("http://10.11.42.189:8080/important/exhardwares")
+      .get("exHardware/list")
       .then((res) => {
-        // console.log(res)
-        // console.log(this.AllDatas)
-        this.AllDatas = res.data.data.ExHardwareList
+        this.AllDatas = res.data.data.data;
       })
       .catch((error) => {
         console.log(error);
       })
       .then(() => {
-        if(this.AllDatas){
+        if (this.AllDatas) {
           this.pageMethod(this.AllDatas);
           this.tableData = this.AllDatas.slice(0, this.pageInst.pageSize);
         }
@@ -183,19 +202,20 @@ export default {
     },
     // 提交新增表单
     submitUnitInfoForm() {
-      console.log("提交单位信息表单");
       this.$axios
-        .post("http://10.11.42.189:8080/important/addexhardwares", {
+        .post("exHardware/save", {
           ...this.newFormdata,
         })
         .then((res) => {
-          const status = res.data.data.res;
-          if (status == 1) {
+          // console.log(res)
+          const status = res.data.success;
+          if (status) {
             this.$message({
               type: "success",
               message: "提交成功!",
               duration: 1500,
             });
+            this.$router.go(0);
           } else {
             this.$message({
               type: "error",
@@ -203,7 +223,6 @@ export default {
               duration: 1500,
             });
           }
-          this.$router.go(0);
         })
         .catch((error) => {
           console.log(error);
@@ -224,78 +243,86 @@ export default {
         person_name: "",
         person_phone: null,
         status: "未处理",
-        // data: '',
       };
-      // this.addUnitInfoDialogVisible = !this.addUnitInfoDialogVisible
     },
     // 上报表格内容
     submitData(row) {
       // console.log(row)
-      this.$axios.get(`http://10.11.42.189:8080/important/sendInfo1/${row.id}`)
-      .then((res)=>{
-        console.log(res.data)
-        if(res.data.success){
+      this.$axios
+        .post("exHardware/send", {
+          ...row,
+        })
+        .then((res) => {
+          // console.log(res.data)
+          if (res.data.success) {
+            this.$message({
+              type: "success",
+              message: "上报成功!",
+              duration: 1500,
+            });
+          } else {
+            this.$message({
+              type: "error",
+              message: "上报失败!",
+              duration: 1500,
+            });
+          }
+        })
+        .catch((error) => {
           this.$message({
-          type: "success",
-          message: "上报成功!",
-          duration: 1500,
+            type: "error",
+            message: "上报失败!" + error,
+            duration: 1500,
+          });
         });
-        }else{
-          this.$message({
-          type: "error",
-          message: "上报失败!",
-          duration: 1500,
-        });
-        }
-      }).catch((error)=>{
-        this.$message({
-          type: "error",
-          message: "上报失败!"+error,
-          duration: 1500,
-        });
-      })
     },
-    submitRomve(row){
-      console.log(row.id)
-      this.$axios.get(`http://10.11.42.189:8080/important/deleteExhardware/${row.id}`)
-      .then((res)=>{
-        // console.log(res)
-        if(res.data.success){
-          this.$message({
+    submitRomve(row) {
+      console.log(row.id);
+      this.$axios
+        .delete(`exHardware/delete/${row.id}`)
+        .then((res) => {
+          console.log(res);
+          if (res.data.success) {
+            this.$message({
               type: "success",
               message: "删除成功!",
               duration: 1500,
             });
-        }else{
-          this.$message({
-          type: "error",
-          message: "删除失败!",
-          duration: 1500,
-        });
-        }
-      }).catch((error)=>{
-        this.$message({
-          type: "error",
-          message: "删除失败!" +error,
-          duration: 1500,
+            this.$router.go(0)
+          } else {
+            this.$message({
+              type: "error",
+              message: "删除失败!",
+              duration: 1500,
+            });
+          }
         })
-      })
+        .catch((error) => {
+          this.$message({
+            type: "error",
+            message: "删除失败!" + error,
+            duration: 1500,
+          });
+        });
     },
     // 搜索
     serchMethod() {
-      this.$axios.get("http://10.11.42.189:8080/important/selectexhardwares",{
-        params:{
-            ...this.serchData
-        }
-      })
-      .then((res)=>{
-        console.log(res.data)
-        this.tableData = res.data.list
-      }).catch((error)=>{
-        console.log(error)
-      }).then(()=>{
-        this.pageMethod(this.tableData)
-      })
+      this.$axios
+        .get("important/selectexhardwares", {
+          params: {
+            ...this.serchData,
+          },
+        })
+        .then((res) => {
+          console.log(res.data);
+          this.tableData = res.data.list;
+        })
+        .catch((error) => {
+          console.log(error);
+        })
+        .then(() => {
+          this.pageMethod(this.tableData);
+        });
     },
     // 搜索重置
     serchReset() {
@@ -311,9 +338,9 @@ export default {
     // 全选框要删除或上报的内容
     handleSelectionChange(val) {
       // console.log(val);
-      this.selectData = []
-      for(let i=0;i<val.length;i++){
-        this.selectData.push(val[i].id)
+      this.selectData = [];
+      for (let i = 0; i < val.length; i++) {
+        this.selectData.push(val[i].id);
       }
     },
     // 全选框删除
@@ -325,27 +352,34 @@ export default {
           type: "warning",
         })
           .then(() => {
-            //请求内容。。。
-            console.log(this.selectData)
-            this.$axios.post('http://10.11.42.189:8080/important/deleteExhardwares',{
-              // params:{
-                ids: this.selectData
-              // }
-            })
-            .then((res)=>{
-              console.log(res.data)
-              this.$message({
-              type: "success",
-              message: "删除成功!",
-              duration: 1500,
-            })
-            }).catch((error)=>{
-                this.$message({
-                type: "error",
-                message: "删除失败!" + error,
-                duration: 1500,
+            this.$axios
+              .post(`exHardware/deleteBatch`, {
+                Ids: this.selectData,
               })
-            })
+              .then((res) => {
+                // console.log(res.data);
+                if (res.data.success) {
+                  this.$message({
+                    type: "success",
+                    message: "删除成功!",
+                    duration: 1500,
+                  });
+                  this.$router.go(0);
+                } else {
+                  this.$message({
+                    type: "error",
+                    message: "删除失败!",
+                    duration: 1500,
+                  });
+                }
+              })
+              .catch((error) => {
+                this.$message({
+                  type: "error",
+                  message: "删除失败!" + error,
+                  duration: 1500,
+                });
+              });
           })
           .catch(() => {
             this.$message({
@@ -359,12 +393,34 @@ export default {
     // 全选框上报
     submit() {
       if (this.selectData && this.selectData.length > 0) {
-        console.log(this.selectData);
-        this.$message({
-          type: "success",
-          message: "上报成功!",
-          duration: 1500,
-        });
+        this.$axios
+          .post(`exHardware/sendBatch`, {
+            Ids: this.selectData,
+          })
+          .then((res) => {
+            console.log(res.data);
+            if (res.data.success) {
+              this.$message({
+                type: "success",
+                message: "上报成功!",
+                duration: 1500,
+              });
+              // this.$router.go(0);
+            } else {
+              this.$message({
+                type: "error",
+                message: "上报失败!",
+                duration: 1500,
+              });
+            }
+          })
+          .catch((error) => {
+            this.$message({
+              type: "error",
+              message: "上报失败!" + error,
+              duration: 1500,
+            });
+          });
       }
     },
   },

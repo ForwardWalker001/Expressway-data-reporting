@@ -44,7 +44,7 @@
       @click="addUnitInfoDialogVisible = true"
       >新增</el-button
     >
-    <el-table :data="tableData" border style="width: 100%">
+    <el-table :data="tableData"  style="width: 100%">
       <el-table-column
         align="center" fixed
         prop="enrichmentsThreatTypeLevel"
@@ -166,7 +166,7 @@
       <el-table-column
         align="center"
         prop="enrichmentsGeoIpDstAddrCountryCn"
-        label="目的ip所属国家名称"
+        label="目的ip所属地区名称"
         width="120"
       >
       </el-table-column>
@@ -290,7 +290,7 @@ export default {
     },
     serchMethod() {
       this.$axios
-        .post("http://10.11.44.74:8888/test/threatintelligence/findByCondition", {
+        .post("test/threatintelligence/findByCondition", {
             ...this.serchData,
         })
         .then((res) => {
@@ -328,7 +328,7 @@ export default {
     updateData() {
       this.$axios
         .get(
-          "http://10.11.44.74:8888/test/threatintelligence/selectAllInformation"
+          "test/threatintelligence/selectAllInformation"
         )
         .then((res) => {
           this.AllDatas = res.data.data.InformationList;
@@ -370,7 +370,7 @@ export default {
     handleClick(row) {
       this.$axios
         .get(
-          `http://10.11.44.74:8888/test/threatintelligence/sendInfromation/${row.id}`
+          `test/threatintelligence/sendInfromation/${row.id}`
         )
         .then((res) => {
           console.log(res.data);
@@ -409,7 +409,7 @@ export default {
           //请求内容。。。
           this.$axios
             .get(
-              `http://10.11.44.74:8888/test/threatintelligence/deleteInfromation/${row.id}`
+              `test/threatintelligence/deleteInfromation/${row.id}`
             )
             .then((res) => {
               // console.log(res.data)
