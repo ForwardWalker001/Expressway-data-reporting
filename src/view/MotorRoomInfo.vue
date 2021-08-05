@@ -57,7 +57,7 @@
 					<!-- <el-table-column label="上报状态" show-overflow-tooltip prop="workingname">
           </el-table-column> -->
 					<el-table-column label="操作" show-overflow-tooltip>
-						<template>
+						<template slot-scope="scope">
 							<el-button size="mini" type="danger" @click="submitRomve(scope.row)">删除</el-button>
 							<el-button size="mini" @click="submitData(scope.row)">上报</el-button>
 							<!-- <el-button size="mini" type="danger">修改</el-button> -->

@@ -180,13 +180,13 @@
 					})
 					.then((res) => {
 						const status = res.data.success;
-						console.log(res)
 						if (status) {
 							this.$message({
 								type: "success",
 								message: "提交成功!",
 								duration: 1500,
 							});
+							this.$router.go(0);
 						} else {
 							this.$message({
 								type: "error",
@@ -232,6 +232,7 @@
 								message: "上报成功!",
 								duration: 1500,
 							});
+							
 						} else {
 							this.$message({
 								type: "error",

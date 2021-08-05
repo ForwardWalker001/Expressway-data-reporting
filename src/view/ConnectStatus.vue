@@ -84,7 +84,7 @@ export default {
     setIntervalData() {
       this.timer = setInterval(() => {
         this.heartbeatCon();
-      }, 3000);
+      }, 2000);
     },
     heartbeatCon() {
       this.$axios

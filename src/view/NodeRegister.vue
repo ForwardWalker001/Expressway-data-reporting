@@ -64,13 +64,12 @@ export default {
     preservat() {
       localStorage.setItem("inputData", JSON.stringify(this.inputData));
       this.$axios
-        .get("Client/saveInfo", {
-          params: {
+        .post("Client/save", {
+          // params: {
             ...this.inputData,
-          },
+          // },
         })
         .then((res) => {
-          console.log(res.data);
           if (res.data.success) {
             // this.ledColor = true
             this.$message({
@@ -101,7 +100,6 @@ export default {
           }
         )
         .then((res) => {
-          console.log(res);
           if (res.data.data.isConnected) {
             this.$message({
               type: "success",
@@ -134,7 +132,6 @@ export default {
             ...this.inputData,
         })
         .then((res) => {
-          console.log(res)
           if (res.data.data.connected) {
             // this.ledColor = true
             this.disabled = true
@@ -164,7 +161,7 @@ export default {
     setIntervalData() {
       this.timer = setInterval(() => {
         this.heartbeatCon();
-      }, 3000);
+      }, 2000);
     },
     heartbeatCon() {
       this.$axios
@@ -174,7 +171,6 @@ export default {
           },
         })
         .then((res) => {
-          console.log(res)
           if (res.data) {
             this.ledColor = true;
             this.disabled = true;

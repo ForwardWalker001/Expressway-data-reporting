@@ -14,7 +14,7 @@ Vue.use(ElementUI);
 
 Vue.config.productionTip = false
 
-document.title = '高速公路数据上报'
+document.title = '滨江区高速公路数据上报'
 new Vue({
   router,
   store,

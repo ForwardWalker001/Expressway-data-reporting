@@ -72,6 +72,7 @@ export default {
   },
   data() {
     return {
+      zhupic: [0, 0, 0, 0],
       mapData: [],
       count: [],
       pieData: [],
@@ -133,6 +134,22 @@ export default {
       });
     },
     //地图模块
+    async handle2() {
+      var { data: res1 } = await this.$axios.get("exUnitServer/count");
+      this.zhupic[0] = res1.data.data;
+      //console.log(res1)
+
+      var { data: res2 } = await this.$axios.get("exMachineRoomServer/count");
+      this.zhupic[1] = res2.data.data;
+
+      var { data: res3 } = await this.$axios.get("exMessageServer/count");
+      this.zhupic[2] = res3.data.data;
+
+      var { data: res4 } = await this.$axios.get("exHardwareServer/count");
+      this.zhupic[3] = res4.data.data;
+
+      console.log(this.zhupic);
+    },
     //地图模块
 
     async init01() {
@@ -373,8 +390,6 @@ export default {
       var planePath = "arrow";
 
       var convertData = function (data) {
-
-
         var res = [];
 
         for (var i = 0; i < data.length; i++) {
@@ -515,7 +530,8 @@ export default {
       //console.log(myChart);
     },
     //柱形图左一
-    init02() {
+    async init02() {
+      await this.handle2();
       //1，实例化对象
       var myChart = this.$echarts.init(document.querySelector(".bar .chart"));
       //2，指定配置项和数据
@@ -587,7 +603,7 @@ export default {
             type: "bar",
             barWidth: "35%",
             // ajax传动态数据
-            data: [200, 300, 900, 600],
+            data: this.zhupic,
             itemStyle: {
               // 修改柱子圆角
               barBorderRadius: 10,
@@ -605,6 +621,7 @@ export default {
     //柱形图右一
     async init03() {
       await this.handle();
+  
       // 1.实例化对象
       var myChart = this.$echarts.init(document.querySelector(".bar2 .chart"));
       // 声明颜色数组
