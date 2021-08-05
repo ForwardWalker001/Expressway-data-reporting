@@ -50,6 +50,7 @@ export default {
         platformname: "",
         username: "",
         password: "",
+        status: 0
       },
     };
   },

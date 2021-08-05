@@ -25,7 +25,7 @@
             <template slot-scope="scope">
               <el-tag type="success" effect="dark" v-if="scope.row.status"
                 >已连接</el-tag>
-              <el-tag type="danger" effect="dark" v-else>未连接</el-tag>
+              <el-tag type="danger" effect="dark" v-else >未连接</el-tag>
             </template>
           </el-table-column>
         </el-table>

@@ -6,7 +6,7 @@
                 <head-bar></head-bar>
             </el-header>
             <el-container>
-            <el-aside width="150px" style="background-color:#545c64">
+            <el-aside width="160px" style="background-color:#545c64">
                 <left-bar></left-bar>
             </el-aside>
             <el-main style="padding:20px">

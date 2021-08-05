@@ -31,9 +31,9 @@
           <el-button type="primary" @click="login" class="loginBtn"
             >登录</el-button
           >
-          <el-button type="info" @click="resetLoginForm" class="resetBtn"
+          <!-- <el-button type="info" @click="resetLoginForm" class="resetBtn"
             >重置</el-button
-          >
+          > -->
         </el-form-item>
       </el-form>
       <div class="footer">
@@ -145,7 +145,7 @@ export default {
       }
       .loginBtn {
         position: absolute;
-        left: 0px;
+        left: 145px;
       }
       .resetBtn {
         position: absolute;
